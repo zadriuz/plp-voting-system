@@ -32,7 +32,7 @@ CREATE TABLE `tblcandidates` (
   `credentials` text,
   `plataporma` text,
   PRIMARY KEY (`candidate_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `tblcandidates` (
 
 LOCK TABLES `tblcandidates` WRITE;
 /*!40000 ALTER TABLE `tblcandidates` DISABLE KEYS */;
-INSERT INTO `tblcandidates` VALUES (1,'Candidate A','Test Party',1,'Dummy credentials for testing.','Dummy platform for testing.'),(2,'Candidate B','Test Party',1,'Dummy credentials for testing.','Dummy platform for testing.'),(3,'Abstain','Test Party2',1,'Try','Try');
+INSERT INTO `tblcandidates` VALUES (1,'Candidate A','Test Party',1,'Dummy credentials for testing.','Dummy platform for testing.'),(2,'Candidate B','Test Party',1,'Dummy credentials for testing.','Dummy platform for testing.'),(3,'Abstain','Test Party2',1,'Try','Try'),(4,'Candidate C','Test Party 2',2,'try','test'),(5,'Candidate D','Test Party 2',2,'try','test'),(6,'Abstain','TestParty 2',2,'try','test'),(9,'Candidate E','',3,'try','try'),(10,'Candidate F','a',3,'try','try'),(11,'Abstain','T',3,'try','try');
 /*!40000 ALTER TABLE `tblcandidates` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -133,7 +133,7 @@ CREATE TABLE `tblvotes` (
   `vote_id` int NOT NULL AUTO_INCREMENT,
   `candidate_id` int DEFAULT NULL,
   PRIMARY KEY (`vote_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,7 +142,7 @@ CREATE TABLE `tblvotes` (
 
 LOCK TABLES `tblvotes` WRITE;
 /*!40000 ALTER TABLE `tblvotes` DISABLE KEYS */;
-INSERT INTO `tblvotes` VALUES (1,1),(3,3);
+INSERT INTO `tblvotes` VALUES (1,1),(3,3),(4,2),(5,6),(6,2),(7,6),(8,2),(9,5),(10,1),(11,5),(12,9);
 /*!40000 ALTER TABLE `tblvotes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -155,4 +155,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-03-29 18:49:42
+-- Dump completed on 2026-03-29 22:01:24
