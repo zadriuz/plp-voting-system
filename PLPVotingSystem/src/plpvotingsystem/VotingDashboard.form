@@ -2,7 +2,17 @@
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
-    <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
+    <Component class="javax.swing.ButtonGroup" name="btnGroupPres">
+    </Component>
+    <Component class="javax.swing.ButtonGroup" name="btnGroupVP">
+    </Component>
+    <Component class="javax.swing.ButtonGroup" name="btnGroupSec">
+    </Component>
+    <Component class="javax.swing.ButtonGroup" name="btnGroupTreasurer">
+    </Component>
+    <Component class="javax.swing.ButtonGroup" name="btnGroupAuditor">
+    </Component>
+    <Component class="javax.swing.ButtonGroup" name="btnGroupPRO">
     </Component>
   </NonVisualComponents>
   <Properties>
@@ -31,42 +41,132 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                      <Component id="txtPosition" min="-2" pref="121" max="-2" attributes="0"/>
+                      <Component id="lblPresidentDisplay" min="-2" pref="121" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="btnCandidateB" min="-2" pref="98" max="-2" attributes="0"/>
                           <Component id="btnCandidateA" min="-2" pref="98" max="-2" attributes="0"/>
+                          <Component id="btnAbstain_P" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+                          <Component id="btnCandidateC" alignment="1" min="-2" pref="98" max="-2" attributes="0"/>
+                          <Component id="btnCandidateD" alignment="1" min="-2" pref="98" max="-2" attributes="0"/>
+                          <Component id="btnAbstain_VP" alignment="1" min="-2" pref="98" max="-2" attributes="0"/>
+                          <Component id="btnCandidateE" alignment="1" min="-2" pref="98" max="-2" attributes="0"/>
+                          <Component id="btnCandidateF" alignment="1" min="-2" pref="98" max="-2" attributes="0"/>
+                          <Component id="btnAbstain_Sec" alignment="1" min="-2" pref="98" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="151" max="-2" attributes="0"/>
-                      <Component id="btnSubmit" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lblSecretaryDisplay" min="-2" pref="121" max="-2" attributes="0"/>
+                          <Component id="lblVPDisplay" min="-2" pref="121" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="153" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="211" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="lblAuditorDisplay" min="-2" pref="121" max="-2" attributes="0"/>
+                  <Component id="lblTreasurerDisplay" min="-2" pref="121" max="-2" attributes="0"/>
+                  <Component id="lblPRODisplay" min="-2" pref="121" max="-2" attributes="0"/>
+                  <Component id="btnCandidateB1" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+                  <Component id="btnCandidateA1" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+                  <Component id="btnAbstain_P1" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+                  <Component id="btnCandidateB2" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+                  <Component id="btnCandidateA2" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+                  <Component id="btnAbstain_P2" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+                  <Component id="btnCandidateB3" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+                  <Component id="btnCandidateA3" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+                  <Component id="btnAbstain_P3" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="240" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <Component id="btnSubmit" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="149" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
-              <Component id="txtPosition" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-              <Component id="btnCandidateA" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="btnCandidateB" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="79" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblPresidentDisplay" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblTreasurerDisplay" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="btnCandidateA" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="btnCandidateB" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                              <Component id="btnAbstain_P" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="btnCandidateA1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="btnCandidateB1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                              <Component id="btnAbstain_P1" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblVPDisplay" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblAuditorDisplay" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="btnCandidateC" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="btnCandidateD" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="btnAbstain_VP" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="btnCandidateA2" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="btnCandidateB2" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                              <Component id="btnAbstain_P2" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblSecretaryDisplay" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblPRODisplay" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                      <Component id="btnCandidateE" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="btnCandidateF" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="btnAbstain_Sec" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="btnCandidateA3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="btnCandidateB3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                      <Component id="btnAbstain_P3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace pref="68" max="32767" attributes="0"/>
               <Component id="btnSubmit" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="txtPosition">
+    <Component class="javax.swing.JLabel" name="lblPresidentDisplay">
       <Properties>
         <Property name="text" type="java.lang.String" value="President"/>
         <Property name="toolTipText" type="java.lang.String" value=""/>
@@ -75,7 +175,7 @@
     <Component class="javax.swing.JRadioButton" name="btnCandidateA">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="buttonGroup1"/>
+          <ComponentRef name="btnGroupPres"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Candidate A"/>
       </Properties>
@@ -83,7 +183,7 @@
     <Component class="javax.swing.JRadioButton" name="btnCandidateB">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="buttonGroup1"/>
+          <ComponentRef name="btnGroupPres"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Candidate B"/>
       </Properties>
@@ -95,6 +195,170 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubmitActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnAbstain_P">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupPres"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Abstain"/>
+        <Property name="toolTipText" type="java.lang.String" value="Choose this if you wish to withhold your vote for this position."/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnCandidateC">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupVP"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Candidate C"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblVPDisplay">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Vice President"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnCandidateD">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupVP"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Candidate D"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnAbstain_VP">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupVP"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Abstain"/>
+        <Property name="toolTipText" type="java.lang.String" value="Choose this if you wish to withhold your vote for this position."/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblSecretaryDisplay">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Secretary"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnCandidateE">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupSec"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Candidate E"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnCandidateF">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupSec"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Candidate F"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnAbstain_Sec">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupSec"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Abstain"/>
+        <Property name="toolTipText" type="java.lang.String" value="Choose this if you wish to withhold your vote for this position."/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblTreasurerDisplay">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Treasurer"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblAuditorDisplay">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Auditor"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblPRODisplay">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="P.R.O."/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnCandidateA1">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupPres"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Candidate A"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnCandidateB1">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupPres"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Candidate B"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnAbstain_P1">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupPres"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Abstain"/>
+        <Property name="toolTipText" type="java.lang.String" value="Choose this if you wish to withhold your vote for this position."/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnCandidateA2">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupPres"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Candidate A"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnCandidateB2">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupPres"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Candidate B"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnAbstain_P2">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupPres"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Abstain"/>
+        <Property name="toolTipText" type="java.lang.String" value="Choose this if you wish to withhold your vote for this position."/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnAbstain_P3">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupPres"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Abstain"/>
+        <Property name="toolTipText" type="java.lang.String" value="Choose this if you wish to withhold your vote for this position."/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnCandidateA3">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupPres"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Candidate A"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="btnCandidateB3">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btnGroupPres"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Candidate B"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

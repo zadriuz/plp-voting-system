@@ -30,6 +30,8 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lblStudentDisplay" min="-2" pref="108" max="-2" attributes="0"/>
                           <Component id="lblPresidentDisplay" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblVPresidentDisplay" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblSecretaryDisplay" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -48,9 +50,13 @@
               <Component id="lblStudentDisplay" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
               <Component id="lblPresidentDisplay" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+              <Component id="lblVPresidentDisplay" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+              <Component id="lblSecretaryDisplay" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
               <Component id="btnConfirm" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="120" max="32767" attributes="0"/>
+              <EmptySpace pref="354" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -73,6 +79,16 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConfirmActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblVPresidentDisplay">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Vice President:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblSecretaryDisplay">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Secretary:"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
