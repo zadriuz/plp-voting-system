@@ -10,20 +10,30 @@ import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 
 public class ReviewPage extends javax.swing.JFrame {
-    String studentNo, presChoice, vpChoice, secChoice;
+    String studentNo, presChoice, vpChoice, secChoice, treasChoice, audiChoice, proChoice;
     
-    public ReviewPage(String studentNo, String presChoice, String vpChoice, String secChoice) {
+    String[] candidateChoices;
+    
+    public ReviewPage(String studentNumber, String[] candidateChoices) {
         initComponents();
         
-        this.studentNo = studentNo;
-        this.presChoice = presChoice;
-        this.vpChoice = vpChoice;
-        this.secChoice = secChoice;
+        this.candidateChoices = candidateChoices;
+        this.studentNo = studentNumber;
+        
+        this.presChoice = candidateChoices[0];
+        this.vpChoice = candidateChoices[1];
+        this.secChoice = candidateChoices[2];
+        this.treasChoice = candidateChoices[3];
+        this.audiChoice = candidateChoices[4];
+        this.proChoice = candidateChoices[5];
         
         lblStudentDisplay.setText(this.studentNo);
         lblPresidentDisplay.setText(this.presChoice);
         lblVPresidentDisplay.setText(this.vpChoice);
         lblSecretaryDisplay.setText(this.secChoice);
+        lblTreasurerDisplay.setText(this.treasChoice);
+        lblAuditorDisplay.setText(this.audiChoice);
+        lblPRODisplay.setText(this.proChoice);
     }
 
     @SuppressWarnings("unchecked")
@@ -35,6 +45,9 @@ public class ReviewPage extends javax.swing.JFrame {
         btnConfirm = new javax.swing.JButton();
         lblVPresidentDisplay = new javax.swing.JLabel();
         lblSecretaryDisplay = new javax.swing.JLabel();
+        lblTreasurerDisplay = new javax.swing.JLabel();
+        lblAuditorDisplay = new javax.swing.JLabel();
+        lblPRODisplay = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -53,6 +66,12 @@ public class ReviewPage extends javax.swing.JFrame {
 
         lblSecretaryDisplay.setText("Secretary:");
 
+        lblTreasurerDisplay.setText("Treasurer:");
+
+        lblAuditorDisplay.setText("Auditor:");
+
+        lblPRODisplay.setText("PRO:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -65,7 +84,10 @@ public class ReviewPage extends javax.swing.JFrame {
                             .addComponent(lblStudentDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblPresidentDisplay)
                             .addComponent(lblVPresidentDisplay)
-                            .addComponent(lblSecretaryDisplay)))
+                            .addComponent(lblSecretaryDisplay)
+                            .addComponent(lblTreasurerDisplay)
+                            .addComponent(lblAuditorDisplay)
+                            .addComponent(lblPRODisplay)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(152, 152, 152)
                         .addComponent(btnConfirm)))
@@ -82,71 +104,48 @@ public class ReviewPage extends javax.swing.JFrame {
                 .addComponent(lblVPresidentDisplay)
                 .addGap(33, 33, 33)
                 .addComponent(lblSecretaryDisplay)
-                .addGap(57, 57, 57)
+                .addGap(33, 33, 33)
+                .addComponent(lblTreasurerDisplay)
+                .addGap(46, 46, 46)
+                .addComponent(lblAuditorDisplay)
+                .addGap(41, 41, 41)
+                .addComponent(lblPRODisplay)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
                 .addComponent(btnConfirm)
-                .addContainerGap(354, Short.MAX_VALUE))
+                .addGap(144, 144, 144))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
-        Connection conn = database.DBConnection.DBConnect();
-        
-        try{
-            String queryP = "SELECT candidate_id FROM tblCandidates WHERE full_name = ? AND position_id = 1";
-            PreparedStatement pstP = conn.prepareStatement(queryP);
-            pstP.setString(1, presChoice);
-            ResultSet rsP = pstP.executeQuery();
+
+        try(
+            Connection conn = database.DBConnection.DBConnect();
+            PreparedStatement pst1 = conn.prepareStatement("SELECT candidate_id FROM tblCandidates WHERE full_name = ? AND position_id = ?");
+            PreparedStatement pst2 = conn.prepareStatement("INSERT INTO tblVotes(candidate_id) VALUES (?)");
+            PreparedStatement pst3 = conn.prepareStatement("UPDATE tblVoters SET has_voted = 1 WHERE student_number = ?")
+        ){
+            int[] selectedIDs = new int[6];
             
-            if(rsP.next()){
-                int candidateID = rsP.getInt("candidate_id");
+            for(int i = 0; i < candidateChoices.length; i++){
+                pst1.setString(1, candidateChoices[i]);
+                pst1.setInt(2, i + 1);
+                ResultSet rs1 = pst1.executeQuery();
                 
-                String query2 = "INSERT INTO tblVotes(candidate_id)VALUES(?)";
-                PreparedStatement pstP1 = conn.prepareStatement(query2);
-                pstP1.setInt(1, candidateID);
-                pstP1.executeUpdate();
+                if(rs1.next()){
+                    selectedIDs[i] = rs1.getInt("candidate_id");
+                }
             }
             
-            String queryVP = "SELECT candidate_id FROM tblCandidates WHERE full_name = ? AND position_id = 2";
-            PreparedStatement pstVP = conn.prepareStatement(queryVP);
-            pstVP.setString(1, vpChoice);
-            
-            ResultSet rsVP = pstVP.executeQuery();
-            
-            if(rsVP.next()){
-                int candidateID = rsVP.getInt("candidate_id");
-                
-                String queryVP1 = "INSERT INTO tblVotes (candidate_id) VALUES (?)";
-                PreparedStatement pstVP1 = conn.prepareStatement(queryVP1);
-                pstVP1.setInt(1, candidateID);
-                pstVP1.executeUpdate();
+            for(int i = 0; i < selectedIDs.length; i++){
+                pst2.setInt(1, selectedIDs[i]);
+                pst2.addBatch();
             }
+            pst2.executeBatch();
             
-            String secQuery = "SELECT candidate_id FROM tblCandidates WHERE full_name = ? AND position_id = 3";
-            PreparedStatement pstSec = conn.prepareStatement(secQuery);
-            pstSec.setString(1, secChoice);
-            ResultSet rsSec = pstSec.executeQuery();
-            
-            if(rsSec.next()){
-                int candidateID = rsSec.getInt("candidate_id");
-                
-                String secQuery1 = "INSERT INTO tblVotes(candidate_id) VALUES (?)";
-                PreparedStatement pstSec1 = conn.prepareStatement(secQuery1);
-                pstSec1.setInt(1, candidateID);
-                pstSec1.executeUpdate();
-            }
-            
-            String query3 = "UPDATE tblVoters SET has_voted = 1 WHERE student_number = ?";
-            PreparedStatement pst3 = conn.prepareStatement(query3);
             pst3.setString(1, studentNo);
             pst3.executeUpdate();
-            
-            
-            JOptionPane.showMessageDialog(this, "Vote submitted successfully");
-            this.dispose();
-            new plpvotingsystem.LoginForm().setVisible(true);
-            
         }catch(java.sql.SQLException e){
             JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
             return;
@@ -183,16 +182,20 @@ public class ReviewPage extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ReviewPage("TestUser", "TestPresident", "TestVicePresident", "TestSecretary").setVisible(true);
+                String[] candidateChoices = new String[6];
+                new ReviewPage("TestUser", candidateChoices).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConfirm;
+    private javax.swing.JLabel lblAuditorDisplay;
+    private javax.swing.JLabel lblPRODisplay;
     private javax.swing.JLabel lblPresidentDisplay;
     private javax.swing.JLabel lblSecretaryDisplay;
     private javax.swing.JLabel lblStudentDisplay;
+    private javax.swing.JLabel lblTreasurerDisplay;
     private javax.swing.JLabel lblVPresidentDisplay;
     // End of variables declaration//GEN-END:variables
 }

@@ -32,6 +32,9 @@
                           <Component id="lblPresidentDisplay" min="-2" max="-2" attributes="0"/>
                           <Component id="lblVPresidentDisplay" min="-2" max="-2" attributes="0"/>
                           <Component id="lblSecretaryDisplay" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblTreasurerDisplay" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblAuditorDisplay" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblPRODisplay" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -54,9 +57,15 @@
               <Component id="lblVPresidentDisplay" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
               <Component id="lblSecretaryDisplay" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+              <Component id="lblTreasurerDisplay" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+              <Component id="lblAuditorDisplay" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+              <Component id="lblPRODisplay" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="99" max="32767" attributes="0"/>
               <Component id="btnConfirm" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="354" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="144" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -88,6 +97,21 @@
     <Component class="javax.swing.JLabel" name="lblSecretaryDisplay">
       <Properties>
         <Property name="text" type="java.lang.String" value="Secretary:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblTreasurerDisplay">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Treasurer:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblAuditorDisplay">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Auditor:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblPRODisplay">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="PRO:"/>
       </Properties>
     </Component>
   </SubComponents>

@@ -63,19 +63,10 @@ public class LoginForm extends javax.swing.JFrame {
             return;
         }
         
-        Connection conn = database.DBConnection.DBConnect();
-        
-        if(conn != null){
-            System.out.println("Connection established. Ready to accept queries");
-        } else{
-            JOptionPane.showMessageDialog(this, "DB Connection Failed");
-            return;
-        }
-        
-        try{
-            String query = "SELECT * FROM tblVoters WHERE student_number = ? AND BINARY passcode = ?";
-            PreparedStatement pst = conn.prepareStatement(query);
-            
+        try(
+            Connection conn = database.DBConnection.DBConnect();
+            PreparedStatement pst = conn.prepareStatement("SELECT * FROM tblVoters WHERE student_number = ? AND BINARY passcode = ?")
+        ){
             pst.setString(1, studentNumber);
             pst.setString(2, passCode);
             
@@ -88,7 +79,7 @@ public class LoginForm extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "You have already voted!");
                 } else{
                     this.dispose();
-                    new plpvotingsystem.VotingDashboard(studentNumber).setVisible(true);
+                    new plpvotingsystem.VotingForm(studentNumber).setVisible(true);
                 }
             } else{
                 JOptionPane.showMessageDialog(this, "Invalid Student # or Passcode");
