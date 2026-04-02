@@ -16,7 +16,7 @@ public class GlobalHeader extends javax.swing.JPanel {
     public GlobalHeader() {
         initComponents();
     }
-
+ 
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -33,7 +33,7 @@ public class GlobalHeader extends javax.swing.JPanel {
 
         lblPLPIcon.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         lblPLPIcon.setForeground(new java.awt.Color(255, 255, 255));
-        lblPLPIcon.setText("lbl");
+        lblPLPIcon.setIcon(new javax.swing.ImageIcon("C:\\Users\\PLP\\Documents\\plp-voting-system\\plpIconTry.png")); // NOI18N
 
         lblPLPVotingSystem.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         lblPLPVotingSystem.setForeground(new java.awt.Color(255, 255, 255));
@@ -44,26 +44,22 @@ public class GlobalHeader extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addComponent(lblPLPIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(123, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(107, Short.MAX_VALUE)
-                    .addComponent(lblPLPVotingSystem, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(58, 58, 58)))
+                .addGap(32, 32, 32)
+                .addComponent(lblPLPIcon)
+                .addGap(18, 18, 18)
+                .addComponent(lblPLPVotingSystem, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(65, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(92, 92, 92)
-                .addComponent(lblPLPIcon)
-                .addContainerGap(176, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(37, 37, 37)
-                    .addComponent(lblPLPVotingSystem)
-                    .addContainerGap(231, Short.MAX_VALUE)))
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblPLPIcon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblPLPVotingSystem)
+                        .addGap(0, 13, Short.MAX_VALUE)))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
