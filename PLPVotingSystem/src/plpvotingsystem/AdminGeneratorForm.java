@@ -7,28 +7,74 @@ package plpvotingsystem;
 import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 /**
  *
  * @author PLP
  */
 public class AdminGeneratorForm extends javax.swing.JFrame {
-    
+
+    String currentStudentID = "";
+
     public AdminGeneratorForm() {
         initComponents();
+
+        this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        this.getRootPane().setDefaultButton(btnGenerate);
+        this.setLocationRelativeTo(null);
+        
+        this.getContentPane().setBackground(new java.awt.Color(245,245,245));
     }
 
-    private String generatePasscode(){
+    private void loadExistingData() {
+        try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("SELECT * FROM tblVoters WHERE student_number = ?")) {
+            pst.setString(1, this.currentStudentID);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                String studentID = rs.getString("student_number");
+                String course = rs.getString("course");
+                String year = rs.getString("year_level");
+                String section = rs.getString("section");
+                String passcode = rs.getString("passcode");
+
+                txtStudentID.setText(studentID);
+                txtCourse.setText(course);
+                txtYear.setText(year);
+                txtSection.setText(section);
+                lblPasscodeDisplay.setText(passcode);
+            }
+        } catch (java.sql.SQLException e) {
+            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+        }
+    }
+
+    public AdminGeneratorForm(String studentID) {
+        initComponents();
+
+        this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        this.currentStudentID = studentID;
+
+        lblTitle.setText("Edit Student");
+        btnGenerate.setText("Update Student and Register");
+        txtStudentID.setEnabled(false);
+
+        loadExistingData();
+    }
+
+    private String generatePasscode() {
         String chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789@#$%^&*()!";
         String passCode = "";
         int charsLength = chars.length();
-        for(int i = 0; i < 8; i++){
-            int charsIndexSelected = (int)(Math.random() * charsLength);
+        for (int i = 0; i < 8; i++) {
+            int charsIndexSelected = (int) (Math.random() * charsLength);
             char c = chars.charAt(charsIndexSelected);
             passCode += c;
         }
         return passCode;
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -40,13 +86,16 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
         txtCourse = new javax.swing.JTextField();
         txtYear = new javax.swing.JTextField();
         txtSection = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        lblTitle = new javax.swing.JLabel();
         lblStudentID1 = new javax.swing.JLabel();
         lblYear = new javax.swing.JLabel();
         lblSection = new javax.swing.JLabel();
+        lblGeneratedPass = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
+        lblStudentID.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblStudentID.setText("Student ID");
 
         txtStudentID.addActionListener(new java.awt.event.ActionListener() {
@@ -55,14 +104,17 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
             }
         });
 
+        btnGenerate.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnGenerate.setText("Generate Passcode & Register");
+        btnGenerate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGenerate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGenerateActionPerformed(evt);
             }
         });
 
-        lblPasscodeDisplay.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        lblPasscodeDisplay.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblPasscodeDisplay.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblPasscodeDisplay.setText("----");
         lblPasscodeDisplay.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
@@ -72,69 +124,79 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setText("Student Voter Registration");
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(0, 0, 0));
+        lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitle.setText("Register Student");
 
+        lblStudentID1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblStudentID1.setText("Course");
 
+        lblYear.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblYear.setText("Year");
 
+        lblSection.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblSection.setText("Section");
+
+        lblGeneratedPass.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblGeneratedPass.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblGeneratedPass.setText("Generated Passcode");
+        lblGeneratedPass.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(46, 46, 46)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnGenerate, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                    .addComponent(txtSection)
+                    .addComponent(txtYear, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtCourse)
+                    .addComponent(txtStudentID)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(102, 102, 102)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnGenerate)
-                            .addComponent(lblPasscodeDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(46, 46, 46)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtSection)
-                                .addComponent(txtStudentID)
-                                .addComponent(txtCourse)
-                                .addComponent(txtYear, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
-                            .addComponent(lblStudentID1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblYear, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblSection, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(109, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(119, 119, 119))
+                            .addComponent(lblStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblStudentID1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblSection, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(48, 48, 48)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblPasscodeDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblGeneratedPass, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50))
+            .addComponent(lblTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(lblTitle)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel2)
-                .addGap(30, 30, 30)
                 .addComponent(lblStudentID)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblStudentID1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(txtCourse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtCourse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblGeneratedPass))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblYear)
-                .addGap(10, 10, 10)
-                .addComponent(txtYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPasscodeDisplay))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblSection)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtSection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(24, 24, 24)
                 .addComponent(btnGenerate)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblPasscodeDisplay)
-                .addGap(19, 19, 19))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
@@ -145,23 +207,31 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
         String course = txtCourse.getText();
         String year = txtYear.getText();
         String section = txtSection.getText();
-        
-        if (studentID.isEmpty() || course.isEmpty() || year.isEmpty() || section.isEmpty()){
+
+        if (studentID.isEmpty() || course.isEmpty() || year.isEmpty() || section.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.");
             return;
         }
-        
-        if (studentID.length() != 8){
+
+        if (studentID.length() != 8) {
             JOptionPane.showMessageDialog(this, "Student ID invalid. Must be exactly 8 characters including the dash (e.g. 25-00722)");
             return;
         }
-            String newPasscode = generatePasscode();
-            lblPasscodeDisplay.setText(newPasscode);
-            
-            try(
-                Connection conn = database.DBConnection.DBConnect();
-                PreparedStatement pst = conn.prepareStatement("INSERT INTO tblVoters (student_number, passcode, has_voted, course, year_level, section)VALUES(?, ?, ?, ?, ?, ?)")
-            ) {
+
+        if (currentStudentID.isEmpty()) {
+            try (
+                    Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("INSERT INTO tblVoters (student_number, passcode, has_voted, course, year_level, section)VALUES(?, ?, ?, ?, ?, ?)"); PreparedStatement pst2 = conn.prepareStatement("SELECT student_number FROM tblVoters WHERE student_number = ?")) {
+
+                pst2.setString(1, studentID);
+                ResultSet rs = pst2.executeQuery();
+
+                if (rs.next()) {
+                    JOptionPane.showMessageDialog(this, "Registration Failed: This Student ID is already registered in the system.", "Duplicate ID", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String newPasscode = generatePasscode();
+                lblPasscodeDisplay.setText(newPasscode);
 
                 pst.setString(1, studentID);
                 pst.setString(2, newPasscode);
@@ -171,20 +241,34 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
                 pst.setString(6, section);
 
                 pst.executeUpdate();
-            
-            JOptionPane.showMessageDialog(this, "Successful enrollment");
-            
-            txtStudentID.setText("");
-            txtCourse.setText("");
-            txtYear.setText("");
-            txtSection.setText("");
-            // lblPasscodeDisplay.setText(""); -> to prevent losing passcode
-            
-            }catch(java.sql.SQLException e){
+
+                JOptionPane.showMessageDialog(this, "Successful enrollment");
+
+                txtStudentID.setText("");
+                txtCourse.setText("");
+                txtYear.setText("");
+                txtSection.setText("");
+                // lblPasscodeDisplay.setText(""); -> to prevent losing passcode
+
+            } catch (java.sql.SQLException e) {
                 JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
                 return;
             }
-        
+        } else {
+            try(Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("UPDATE tblVoters SET course = ?, year_level = ?, section = ? WHERE student_number = ?")){
+                pst.setString(1, txtCourse.getText());
+                pst.setString(2, txtYear.getText());
+                pst.setString(3, txtSection.getText());
+                pst.setString(4, txtStudentID.getText());
+                
+                pst.executeUpdate();
+                
+                JOptionPane.showMessageDialog(this, "Student Successfully Updated!");
+                this.dispose();
+            }catch (java.sql.SQLException e){
+                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            }
+        }
     }//GEN-LAST:event_btnGenerateActionPerformed
 
     private void txtStudentIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtStudentIDActionPerformed
@@ -232,11 +316,12 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGenerate;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel lblGeneratedPass;
     private javax.swing.JLabel lblPasscodeDisplay;
     private javax.swing.JLabel lblSection;
     private javax.swing.JLabel lblStudentID;
     private javax.swing.JLabel lblStudentID1;
+    private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblYear;
     private javax.swing.JTextField txtCourse;
     private javax.swing.JTextField txtSection;

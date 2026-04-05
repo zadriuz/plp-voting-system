@@ -3,11 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package plpvotingsystem;
+import javax.swing.JOptionPane;
 
-/**
- *
- * @author PLP
- */
 public class GlobalHeader extends javax.swing.JPanel {
 
     /**
@@ -15,6 +12,8 @@ public class GlobalHeader extends javax.swing.JPanel {
      */
     public GlobalHeader() {
         initComponents();
+        
+        roundedButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     }
  
     /**
@@ -26,46 +25,69 @@ public class GlobalHeader extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblPLPIcon = new javax.swing.JLabel();
-        lblPLPVotingSystem = new javax.swing.JLabel();
+        roundedButton1 = new plpvotingsystem.RoundedButton();
+        lblPLPViolationSystem = new javax.swing.JLabel();
 
-        setBackground(new java.awt.Color(37, 110, 41));
+        setBackground(new java.awt.Color(31, 99, 35));
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setPreferredSize(new java.awt.Dimension(1000, 100));
 
-        lblPLPIcon.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        lblPLPIcon.setForeground(new java.awt.Color(255, 255, 255));
-        lblPLPIcon.setIcon(new javax.swing.ImageIcon("C:\\Users\\PLP\\Documents\\plp-voting-system\\plpIconTry.png")); // NOI18N
+        roundedButton1.setBackground(new java.awt.Color(53, 115, 57));
+        roundedButton1.setForeground(new java.awt.Color(255, 255, 255));
+        roundedButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/logout.png"))); // NOI18N
+        roundedButton1.setText("Logout");
+        roundedButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        roundedButton1.setIconTextGap(10);
+        roundedButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                roundedButton1ActionPerformed(evt);
+            }
+        });
 
-        lblPLPVotingSystem.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        lblPLPVotingSystem.setForeground(new java.awt.Color(255, 255, 255));
-        lblPLPVotingSystem.setText("PLP Voting System");
+        lblPLPViolationSystem.setBackground(new java.awt.Color(31, 99, 35));
+        lblPLPViolationSystem.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblPLPViolationSystem.setForeground(new java.awt.Color(255, 255, 255));
+        lblPLPViolationSystem.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblPLPViolationSystem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/plpIcon70x70.png"))); // NOI18N
+        lblPLPViolationSystem.setText("Pamantasan ng Lungsod ng Pasig Voting System");
+        lblPLPViolationSystem.setIconTextGap(20);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(lblPLPIcon)
-                .addGap(18, 18, 18)
-                .addComponent(lblPLPVotingSystem, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addComponent(lblPLPViolationSystem)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
+                .addComponent(roundedButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblPLPIcon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblPLPVotingSystem)
-                        .addGap(0, 13, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPLPViolationSystem, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(roundedButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void roundedButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roundedButton1ActionPerformed
+        int userChoice = JOptionPane.showConfirmDialog(
+                null,
+                "Are you sure you want to log out?",
+                "Confirm Logout",
+                JOptionPane.YES_NO_OPTION
+        );
+        
+        if(userChoice == JOptionPane.YES_OPTION){
+            javax.swing.SwingUtilities.getWindowAncestor(this).dispose();
+            new plpvotingsystem.LoginForm().setVisible(true);
+        }
+    }//GEN-LAST:event_roundedButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lblPLPIcon;
-    private javax.swing.JLabel lblPLPVotingSystem;
+    private javax.swing.JLabel lblPLPViolationSystem;
+    private plpvotingsystem.RoundedButton roundedButton1;
     // End of variables declaration//GEN-END:variables
 }

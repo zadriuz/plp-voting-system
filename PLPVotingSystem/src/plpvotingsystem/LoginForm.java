@@ -8,33 +8,39 @@ import javax.swing.JFrame;
 import java.awt.Font;
 
 public class LoginForm extends javax.swing.JFrame {
+
     public LoginForm() {
         initComponents();
-        this.setSize(600,800); 
-        this.setMinimumSize(new java.awt.Dimension(600,800)); 
-        this.setLocationRelativeTo(null); 
-        
-        this.getContentPane().setBackground(new java.awt.Color(55, 140, 59)); 
-        
+
+        this.getRootPane().setDefaultButton(btnLogin);
+        java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
+        this.setIconImage(plpIcon);
+
+        this.setSize(600, 800);
+        this.setMinimumSize(new java.awt.Dimension(600, 800));
+        this.setLocationRelativeTo(null);
+
+        this.getContentPane().setBackground(new java.awt.Color(55, 140, 59));
+
         java.awt.Font txtFieldFont = new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 16);
         java.awt.Color plpGreen = new java.awt.Color(55, 140, 59);
         java.awt.Color defaultGray = java.awt.Color.LIGHT_GRAY;
-        
+
         // --- FIX 7: Restore the Missing Highlight Colors ---
         java.awt.Color modernBlue = new java.awt.Color(0, 120, 215); // Standard modern OS blue
-        
+
         // Fix the Student Number field
         txtStudentNumber.setSelectionColor(modernBlue);
         txtStudentNumber.setSelectedTextColor(java.awt.Color.WHITE);
-        
+
         // Fix the Password field
         pwdPassCode.setSelectionColor(modernBlue);
         pwdPassCode.setSelectedTextColor(java.awt.Color.WHITE);
-        
+
         txtStudentNumber.setFont(txtFieldFont);
         pwdPassCode.setFont(txtFieldFont);
-        
-       // --- FIX 1: Strip the Nimbus Skin off the text fields ---
+
+        // --- FIX 1: Strip the Nimbus Skin off the text fields ---
         txtStudentNumber.setUI(new javax.swing.plaf.basic.BasicTextFieldUI());
         pwdPassCode.setUI(new javax.swing.plaf.basic.BasicPasswordFieldUI());
 
@@ -44,17 +50,17 @@ public class LoginForm extends javax.swing.JFrame {
         // --- FIX 3: Setup Initial Placeholders ---
         txtStudentNumber.setText("Enter your student number");
         txtStudentNumber.setForeground(java.awt.Color.GRAY);
-        
+
         pwdPassCode.setEchoChar((char) 0); // Turn off password dots temporarily
         pwdPassCode.setText("Enter your password");
         pwdPassCode.setForeground(java.awt.Color.GRAY);
-        
+
         // --- FIX 4: The Dynamic Focus Listeners (Borders + Placeholders) ---
-        txtStudentNumber.setBorder(new plpvotingsystem.RoundedBorder(15, defaultGray)); 
+        txtStudentNumber.setBorder(new plpvotingsystem.RoundedBorder(15, defaultGray));
         pwdPassCode.setBorder(new plpvotingsystem.RoundedBorder(15, defaultGray));
-        
-        txtStudentNumber.addFocusListener(new java.awt.event.FocusAdapter(){
-            public void focusGained(java.awt.event.FocusEvent evt){
+
+        txtStudentNumber.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
                 txtStudentNumber.setBorder(new plpvotingsystem.RoundedBorder(15, plpGreen));
                 // Erase placeholder if it's there
                 if (txtStudentNumber.getText().equals("Enter your student number")) {
@@ -62,7 +68,8 @@ public class LoginForm extends javax.swing.JFrame {
                     txtStudentNumber.setForeground(java.awt.Color.BLACK);
                 }
             }
-            public void focusLost(java.awt.event.FocusEvent evt){
+
+            public void focusLost(java.awt.event.FocusEvent evt) {
                 txtStudentNumber.setBorder(new plpvotingsystem.RoundedBorder(15, defaultGray));
                 // Put placeholder back if they left it blank
                 if (txtStudentNumber.getText().isEmpty()) {
@@ -71,9 +78,9 @@ public class LoginForm extends javax.swing.JFrame {
                 }
             }
         });
-    
+
         pwdPassCode.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt){
+            public void focusGained(java.awt.event.FocusEvent evt) {
                 pwdPassCode.setBorder(new plpvotingsystem.RoundedBorder(15, plpGreen));
                 // Erase placeholder and turn on password dots
                 String pass = new String(pwdPassCode.getPassword());
@@ -83,7 +90,8 @@ public class LoginForm extends javax.swing.JFrame {
                     pwdPassCode.setEchoChar('•'); // Turn dots back on
                 }
             }
-            public void focusLost(java.awt.event.FocusEvent evt){
+
+            public void focusLost(java.awt.event.FocusEvent evt) {
                 pwdPassCode.setBorder(new plpvotingsystem.RoundedBorder(15, defaultGray));
                 // Put placeholder back and turn off dots if blank
                 String pass = new String(pwdPassCode.getPassword());
@@ -94,36 +102,35 @@ public class LoginForm extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         // --- FIX 4.5: The Eye Icon Hack ---
-        
         // 1. Tell the password field it is now a container
         pwdPassCode.setLayout(new java.awt.BorderLayout());
-        
+
         // 2. Teleport the eye icon inside the password field and push it to the right edge
         pwdPassCode.add(lblEyeIcon, java.awt.BorderLayout.EAST);
-        
+
         // 3. Add a tiny invisible margin so the icon doesn't crash into your rounded corners
         lblEyeIcon.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 10));
-        
+
         // 4. Change cursor to a hand when hovering over the eye
         lblEyeIcon.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        
+
         // 5. Pre-load your two images so Java doesn't have to search for them every time you click
         // NOTE: Replace these paths with your actual image paths!
-        javax.swing.ImageIcon iconClosed = new javax.swing.ImageIcon("C:\\Users\\PLP\\Documents\\plp-voting-system\\eyeClosedd.png");
-        javax.swing.ImageIcon iconOpen = new javax.swing.ImageIcon("C:\\Users\\PLP\\Documents\\plp-voting-system\\eyeOpenedd.png");
-        
+        javax.swing.ImageIcon iconClosed = new javax.swing.ImageIcon("SystemIcons\\eyeClosedd.png");
+        javax.swing.ImageIcon iconOpen = new javax.swing.ImageIcon("SystemIcons\\eyeOpenedd.png");
+
         // 6. The Click Logic
         lblEyeIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 String pass = new String(pwdPassCode.getPassword());
-                
+
                 // Do nothing if it's currently showing the placeholder
-                if(pass.equals("Enter your password") || pass.isEmpty()){
-                    return; 
+                if (pass.equals("Enter your password") || pass.isEmpty()) {
+                    return;
                 }
-                
+
                 // Toggle the password dots and swap the image
                 if (pwdPassCode.getEchoChar() == '•') {
                     pwdPassCode.setEchoChar((char) 0);      // Show password
@@ -134,7 +141,7 @@ public class LoginForm extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         // --- FIX 5: Click Outside to Deselect ---
         // 1. Make the background panels capable of receiving focus
         roundedPanel1.setFocusable(true);
@@ -159,7 +166,7 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -177,7 +184,11 @@ public class LoginForm extends javax.swing.JFrame {
         lblEyeIcon = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Login");
+        setAlwaysOnTop(true);
         setBackground(new java.awt.Color(37, 110, 41));
+        setIconImages(null);
+        setResizable(false);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         roundedPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -195,7 +206,7 @@ public class LoginForm extends javax.swing.JFrame {
         pwdPassCode.setPreferredSize(new java.awt.Dimension(350, 55));
 
         lblPLPIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblPLPIcon.setIcon(new javax.swing.ImageIcon("C:\\Users\\PLP\\Documents\\plpIcon150x150.jpg")); // NOI18N
+        lblPLPIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/plpIcon150x150.jpg"))); // NOI18N
         lblPLPIcon.setPreferredSize(new java.awt.Dimension(100, 100));
 
         lblPLP.setFont(new java.awt.Font("Segoe UI", 1, 21)); // NOI18N
@@ -235,7 +246,7 @@ public class LoginForm extends javax.swing.JFrame {
         lblVotingSystem1.setText("Secure and transparent student voting");
 
         lblEyeIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblEyeIcon.setIcon(new javax.swing.ImageIcon("C:\\Users\\PLP\\Documents\\plp-voting-system\\eyeClosedd.png")); // NOI18N
+        lblEyeIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/eyeClosedd.png"))); // NOI18N
 
         javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
         roundedPanel1.setLayout(roundedPanel1Layout);
@@ -264,7 +275,7 @@ public class LoginForm extends javax.swing.JFrame {
                         .addGap(166, 166, 166))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
                         .addComponent(lblEyeIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16))))
+                        .addGap(30, 30, 30))))
         );
         roundedPanel1Layout.setVerticalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,9 +298,9 @@ public class LoginForm extends javax.swing.JFrame {
                 .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(lblVotingSystem1)
-                .addGap(31, 31, 31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblEyeIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18))
+                .addGap(43, 43, 43))
         );
 
         getContentPane().add(roundedPanel1, new java.awt.GridBagConstraints());
@@ -301,36 +312,54 @@ public class LoginForm extends javax.swing.JFrame {
         String studentNumber = txtStudentNumber.getText();
         String passCode = new String(pwdPassCode.getPassword());
 
-        if(studentNumber.trim().isEmpty() || passCode.trim().isEmpty() || studentNumber.equals("Enter your student number") || passCode.equals("Enter your password")){
+        if (studentNumber.trim().isEmpty() || passCode.trim().isEmpty() || studentNumber.equals("Enter your student number") || passCode.equals("Enter your password")) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.");
             return;
         }
 
-        try(
-            Connection conn = database.DBConnection.DBConnect();
-            PreparedStatement pst = conn.prepareStatement("SELECT * FROM tblVoters WHERE student_number = ? AND BINARY passcode = ?")
-        ){
-            pst.setString(1, studentNumber);
-            pst.setString(2, passCode);
+        // ... Keep your existing validation check (the isEmpty() and .equals() stuff) above this ...
+        try (Connection conn = database.DBConnection.DBConnect()) {
 
-            ResultSet rs = pst.executeQuery();
+            // --- CHECK 1: THE ADMIN BACKDOOR ---
+            String adminSql = "SELECT * FROM tblAdmins WHERE username = ? AND BINARY password = ?";
+            try (PreparedStatement adminPst = conn.prepareStatement(adminSql)) {
+                adminPst.setString(1, studentNumber); // They typed their username into the Student ID field
+                adminPst.setString(2, passCode);
+                ResultSet adminRs = adminPst.executeQuery();
 
-            if(rs.next()){
-                int has_voted = rs.getInt("has_voted");
-
-                if(has_voted == 1){
-                    JOptionPane.showMessageDialog(this, "You have already voted!");
-                } else{
+                if (adminRs.next()) {
+                    // It's an Admin! Send them to the Admin Form and stop the code.
+                    String userName = adminRs.getString("username");
                     this.dispose();
-                    new plpvotingsystem.VotingForm(studentNumber).setVisible(true);
+                    new plpvotingsystem.AdminDashboard(userName).setVisible(true); // Change this if your main admin menu is named differently
+                    return;
                 }
-            } else{
-                JOptionPane.showMessageDialog(this, "Invalid Student # or Passcode");
-                return;
             }
-        }catch(java.sql.SQLException e){
-            JOptionPane.showMessageDialog(this, "Failed to write queries");
-            return;
+
+            // --- CHECK 2: THE STUDENT LOGIN ---
+            String studentSql = "SELECT * FROM tblVoters WHERE student_number = ? AND BINARY passcode = ?";
+            try (PreparedStatement studentPst = conn.prepareStatement(studentSql)) {
+                studentPst.setString(1, studentNumber);
+                studentPst.setString(2, passCode);
+                ResultSet studentRs = studentPst.executeQuery();
+
+                if (studentRs.next()) {
+                    int has_voted = studentRs.getInt("has_voted");
+
+                    if (has_voted == 1) {
+                        JOptionPane.showMessageDialog(this, "You have already voted!");
+                    } else {
+                        this.dispose();
+                        new plpvotingsystem.StudentDashboard(studentNumber).setVisible(true);
+                    }
+                } else {
+                    // If it's not an admin AND not a student, kick them out.
+                    JOptionPane.showMessageDialog(this, "Invalid Username/Student # or Password");
+                }
+            }
+
+        } catch (java.sql.SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 

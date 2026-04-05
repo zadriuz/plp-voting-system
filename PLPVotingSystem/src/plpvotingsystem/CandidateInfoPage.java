@@ -22,12 +22,15 @@ public class CandidateInfoPage extends javax.swing.JFrame {
         initComponents();
         loadFeed();
         pnlFeed.setLayout(new javax.swing.BoxLayout(pnlFeed, javax.swing.BoxLayout.Y_AXIS));
+        
+        java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
+        this.setIconImage(plpIcon);
     }
 
    private void loadFeed(){
        try(
           Connection conn = database.DBConnection.DBConnect();
-          PreparedStatement pst = conn.prepareStatement("SELECT full_name, party_list, credentials, plataporma FROM tblCandidates WHERE full_name != 'Abstain'")
+          PreparedStatement pst = conn.prepareStatement("SELECT full_name, party_list, credentials, plataporma, image_path FROM tblCandidates WHERE full_name != 'Abstain'")
        ){  
            ResultSet rs = pst.executeQuery();
            
@@ -36,8 +39,9 @@ public class CandidateInfoPage extends javax.swing.JFrame {
                String partyList = rs.getString("party_list");
                String credentials = rs.getString("credentials");
                String plataporma = rs.getString("plataporma");
+               String imgPath = rs.getString("image_path");
                
-               CandidateCard card = new CandidateCard(fullName, partyList, credentials, plataporma);
+               CandidateCard card = new CandidateCard(fullName, partyList, credentials, plataporma, imgPath);
                pnlFeed.add(card);
            }
            pnlFeed.repaint();

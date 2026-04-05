@@ -3,14 +3,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package plpvotingsystem;
+
 import java.awt.FlowLayout;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class PartyCandidatesForm extends javax.swing.JFrame {
+
     String currentParty, studentNo;
 
     public PartyCandidatesForm(String currentParty, String studentNo) {
@@ -18,70 +21,178 @@ public class PartyCandidatesForm extends javax.swing.JFrame {
         this.currentParty = currentParty;
         this.studentNo = studentNo;
         
+        java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
+        this.setIconImage(plpIcon);
+
         pnlCandidatesList.setLayout(new javax.swing.BoxLayout(pnlCandidatesList, javax.swing.BoxLayout.Y_AXIS));
+
+        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+
+        this.getContentPane().setLayout(new java.awt.BorderLayout());
+        this.getContentPane().removeAll();
+        plpvotingsystem.GlobalHeader header = new plpvotingsystem.GlobalHeader();
+        header.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 100, 20, 100));
+
+        header.setPreferredSize(new java.awt.Dimension(1000, 110));
+        this.getContentPane().add(header, java.awt.BorderLayout.NORTH);
+
+        JPanel pnlMain = new JPanel();
+        pnlMain.setLayout(new javax.swing.BoxLayout(pnlMain, javax.swing.BoxLayout.Y_AXIS));
+        pnlMain.setBackground(new java.awt.Color(245, 245, 245));
+        pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(30, 80, 30, 80));
+
+        // 1. Style the Title and Description
+        lblPartyName.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 32));
+        lblPartyDesc.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 16));
+        lblPartyDesc.setForeground(java.awt.Color.DARK_GRAY);
+
+// 2. Turn the Back Button into a clean, clickable text link
+        btnDashboard.setText("← Back to Dashboard");
+        btnDashboard.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 17));
+        btnDashboard.setForeground(new java.awt.Color(34, 139, 34)); // Forest Green
+        btnDashboard.setContentAreaFilled(false);
+        btnDashboard.setBorderPainted(false);
+        btnDashboard.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDashboard.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnDashboard.setBorder(null);
+
+// 3. Clean up the Scroll Pane
+        jScrollPane1.setBorder(null); // Removes the ugly default border
+        jScrollPane1.getViewport().setBackground(new java.awt.Color(245, 245, 245));
+        jScrollPane1.getVerticalScrollBar().setUnitIncrement(16); // Smooth scrolling
         
+        jScrollPane1.getVerticalScrollBar().setUI(new plpvotingsystem.ModernScrollBarUI());
+        
+        pnlCandidatesList.setBackground(new java.awt.Color(245, 245, 245));
+        pnlCandidatesList.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 15));
+
+        btnDashboard.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        lblPartyName.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        lblPartyDesc.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        jScrollPane1.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        // 1. Create a transparent wrapper for the title row
+        JPanel titleRow = new JPanel();
+        titleRow.setLayout(new java.awt.BorderLayout());
+        titleRow.setOpaque(false);
+        titleRow.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 50));
+
+// 2. Anchor the title to the Left
+        titleRow.add(lblPartyName, java.awt.BorderLayout.WEST);
+
+// 3. Build a brand new, custom Vote button (Ignoring the NetBeans one)
+        plpvotingsystem.RoundedButton customBtnVote = new plpvotingsystem.RoundedButton("Vote Now");
+        customBtnVote.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));
+        customBtnVote.setBackground(new java.awt.Color(250, 192, 45));
+        customBtnVote.setForeground(java.awt.Color.BLACK);
+        customBtnVote.setIcon(new ImageIcon("SystemIcons\\voteIcon.png"));
+        customBtnVote.setIconTextGap(20);
+        customBtnVote.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        customBtnVote.setPreferredSize(new java.awt.Dimension(200, 45));
+        customBtnVote.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        customBtnVote.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+// Wire up the click action
+        customBtnVote.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PartyCandidatesForm.this.dispose();
+                new plpvotingsystem.VotingForm(studentNo).setVisible(true);
+            }
+        });
+
+// 4. Anchor the button to the Right
+        titleRow.add(customBtnVote, java.awt.BorderLayout.EAST);
+
+// 5. Force every single layer to strictly align to the left edge
+        btnDashboard.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        titleRow.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        lblPartyDesc.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        jScrollPane1.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+// 6. Assemble the main panel (WITH the scroll pane this time!)
+        pnlMain.add(btnDashboard);
+        pnlMain.add(javax.swing.Box.createVerticalStrut(20));
+        pnlMain.add(titleRow);
+        pnlMain.add(javax.swing.Box.createVerticalStrut(10));
+        pnlMain.add(lblPartyDesc);
+        pnlMain.add(javax.swing.Box.createVerticalStrut(30)); // Breathing room
+        pnlMain.add(jScrollPane1); // <-- The missing container!
+
+        this.getContentPane().add(pnlMain, java.awt.BorderLayout.CENTER);
+
         loadPartyMembers();
+
+        // Force the scroll pane back to the absolute top after everything loads
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                jScrollPane1.getVerticalScrollBar().setValue(0);
+            }
+        });
     }
 
-    private void loadPartyMembers(){
-        
+    private void loadPartyMembers() {
+
         // The VIP list: Stack all your connections and statements here
-        try(
-            Connection conn = database.DBConnection.DBConnect();
-            PreparedStatement pst1 = conn.prepareStatement("SELECT party_description FROM tblPartylists WHERE party_name = ?");
-            PreparedStatement pst2 = conn.prepareStatement("SELECT * FROM tblCandidates WHERE party_list = ?")
-        ){
+        try (
+                Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst1 = conn.prepareStatement("SELECT party_description FROM tblPartylists WHERE party_name = ?"); PreparedStatement pst2 = conn.prepareStatement("SELECT * FROM tblCandidates WHERE party_list = ?")) {
             // Execute Query 1: Get Party Info
             pst1.setString(1, currentParty);
             ResultSet rs1 = pst1.executeQuery();
-            
+
             // Changed to an 'if' because a party only has ONE description
-            if(rs1.next()){
+            if (rs1.next()) {
                 String partyDesc = rs1.getString("party_description");
                 lblPartyName.setText(currentParty);
                 lblPartyDesc.setText(partyDesc);
             }
-            
+
             // Execute Query 2: Get Candidates
             pst2.setString(1, currentParty);
             ResultSet rs2 = pst2.executeQuery();
-            
-            while(rs2.next()){
+
+            while (rs2.next()) {
                 String fullName = rs2.getString("full_name");
                 int positionID = rs2.getInt("position_id");
                 String credentials = rs2.getString("credentials");
                 String platform = rs2.getString("plataporma");
-                
+                String imgPath = rs2.getString("image_path");
+
                 String currentPosition = "";
-                
-                if(positionID == 1){
+
+                if (positionID == 1) {
                     currentPosition = "President";
-                } else if (positionID == 2){
+                } else if (positionID == 2) {
                     currentPosition = "Vice President";
-                } else if (positionID == 3){
+                } else if (positionID == 3) {
                     currentPosition = "Secretary";
-                } else if (positionID == 4){
+                } else if (positionID == 4) {
                     currentPosition = "Treasurer";
-                } else if (positionID == 5){
+                } else if (positionID == 5) {
                     currentPosition = "Auditor";
-                } else if (positionID == 6){
+                } else if (positionID == 6) {
                     currentPosition = "P.R.O.";
                 }
-                
-                CandidateCard myCard = new plpvotingsystem.CandidateCard(fullName, currentParty, credentials, platform);
-                JPanel wrapper = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-                wrapper.add(myCard);
-                pnlCandidatesList.add(wrapper);
+
+                // 1. Create the card (Notice I updated currentParty to currentPosition so your green pill actually works!)
+                CandidateCard myCard = new plpvotingsystem.CandidateCard(fullName, currentPosition, credentials, platform, imgPath);
+
+// 2. Force it to stretch wide instead of shrinking
+                myCard.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+                myCard.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+// 3. Add directly to the list with a 20-pixel gap below it
+                pnlCandidatesList.add(myCard);
+                pnlCandidatesList.add(javax.swing.Box.createVerticalStrut(20));
             }
-            
+
             pnlCandidatesList.repaint();
             pnlCandidatesList.revalidate();
-            
-        }catch(java.sql.SQLException e){
-            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());        
+
+        } catch (java.sql.SQLException e) {
+            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -94,6 +205,8 @@ public class PartyCandidatesForm extends javax.swing.JFrame {
         btnVote = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
+        setResizable(false);
 
         lblPartyName.setText("Party Name");
 

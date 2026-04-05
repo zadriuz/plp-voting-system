@@ -1,1 +1,9 @@
-/PLPVotingSystem/dist/
+# Compiled class files anywhere in the project
+**/*.class
+
+# NetBeans build and distributable folders
+PLPVotingSystem/build/
+PLPVotingSystem/dist/
+
+# NetBeans private user settings
+PLPVotingSystem/nbproject/private/
