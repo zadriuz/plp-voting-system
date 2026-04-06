@@ -13,11 +13,11 @@ import java.sql.ResultSet;
  *
  * @author PLP
  */
-public class AdminGeneratorForm extends javax.swing.JFrame {
+public class AddStudentForm extends javax.swing.JFrame {
 
     String currentStudentID = "";
 
-    public AdminGeneratorForm() {
+    public AddStudentForm() {
         initComponents();
 
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
@@ -50,14 +50,14 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
         }
     }
 
-    public AdminGeneratorForm(String studentID) {
+    public AddStudentForm(String studentID) {
         initComponents();
 
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         this.currentStudentID = studentID;
 
-        lblTitle.setText("Edit Student");
-        btnGenerate.setText("Update Student and Register");
+        lblTitle.setText("Edit Voter Information");
+        btnGenerate.setText("Update Voter and Register");
         txtStudentID.setEnabled(false);
 
         loadExistingData();
@@ -81,7 +81,7 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
 
         lblStudentID = new javax.swing.JLabel();
         txtStudentID = new javax.swing.JTextField();
-        btnGenerate = new javax.swing.JButton();
+        btnGenerate = new plpvotingsystem.RoundedButton();
         lblPasscodeDisplay = new javax.swing.JLabel();
         txtCourse = new javax.swing.JTextField();
         txtYear = new javax.swing.JTextField();
@@ -93,6 +93,7 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
         lblGeneratedPass = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Register Voter");
         setResizable(false);
 
         lblStudentID.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -104,7 +105,9 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
             }
         });
 
+        btnGenerate.setBackground(new java.awt.Color(0, 255, 102));
         btnGenerate.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGenerate.setForeground(new java.awt.Color(0, 0, 0));
         btnGenerate.setText("Generate Passcode & Register");
         btnGenerate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGenerate.addActionListener(new java.awt.event.ActionListener() {
@@ -127,7 +130,7 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
         lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(0, 0, 0));
         lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblTitle.setText("Register Student");
+        lblTitle.setText("Register Voter Information");
 
         lblStudentID1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblStudentID1.setText("Course");
@@ -296,20 +299,21 @@ public class AdminGeneratorForm extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AdminGeneratorForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddStudentForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AdminGeneratorForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddStudentForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AdminGeneratorForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddStudentForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AdminGeneratorForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddStudentForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminGeneratorForm().setVisible(true);
+                new AddStudentForm().setVisible(true);
             }
         });
     }

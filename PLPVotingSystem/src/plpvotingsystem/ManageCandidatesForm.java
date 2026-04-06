@@ -64,6 +64,7 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
             }
         } catch (java.sql.SQLException e) {
             JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            return;
         }
     }
 
@@ -222,13 +223,13 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
         int selectedRow = tblCandidateData.getSelectedRow();
 
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Select a candidate first to delete by clicking on their cell.", "Delete Candidate", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Select a candidate first to remove by clicking on their cell.", "Remove Candidate", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
             String data = tblCandidateData.getValueAt(selectedRow, 0).toString();
             int dataNum = Integer.parseInt(data);
 
-            int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this candidate?", "Select an Option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this candidate?", "Select an Option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
             if (adminChoice == JOptionPane.YES_OPTION) {
                 try (
@@ -236,11 +237,12 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
                     pst.setInt(1, dataNum);
                     pst.executeUpdate();
 
-                    JOptionPane.showMessageDialog(this, "Successfully deleted candidate.");
+                    JOptionPane.showMessageDialog(this, "Successfully removed candidate.");
 
                     loadCandidateTable();
                 } catch (java.sql.SQLException e) {
                     JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                    return;
                 }
             }
         }
@@ -250,7 +252,7 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
         int selectedRow = tblCandidateData.getSelectedRow();
 
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Select a candidate first to edit by clicking on their cell.", "Edit Candidate", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Select a candidate first to edit by clicking on their cell.", "Edit Candidate", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
             String data = tblCandidateData.getValueAt(selectedRow, 0).toString();

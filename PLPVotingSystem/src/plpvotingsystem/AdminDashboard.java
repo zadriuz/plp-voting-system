@@ -37,6 +37,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         btnConcludeElect = new plpvotingsystem.RoundedButton();
         lblGreeting = new javax.swing.JLabel();
+        btnRegisParty = new plpvotingsystem.RoundedButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Dashboard");
@@ -52,7 +53,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnRegisCandidate.setBackground(new java.awt.Color(0, 255, 102));
         btnRegisCandidate.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         btnRegisCandidate.setForeground(new java.awt.Color(0, 0, 0));
-        btnRegisCandidate.setText("Manage Candidate Data");
+        btnRegisCandidate.setText("Manage Candidate Information");
         btnRegisCandidate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRegisCandidate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -63,7 +64,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnRegisStudent.setBackground(new java.awt.Color(250, 192, 45));
         btnRegisStudent.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         btnRegisStudent.setForeground(new java.awt.Color(0, 0, 0));
-        btnRegisStudent.setText("Manage Voter Data");
+        btnRegisStudent.setText("Manage Voter Information");
         btnRegisStudent.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRegisStudent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,27 +91,41 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblGreeting.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblGreeting.setText("Hello");
 
+        btnRegisParty.setBackground(new java.awt.Color(0, 255, 102));
+        btnRegisParty.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        btnRegisParty.setForeground(new java.awt.Color(0, 0, 0));
+        btnRegisParty.setText("Manage Partylist Information");
+        btnRegisParty.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRegisParty.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegisPartyActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(lblGreeting, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 722, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(btnRegisCandidate, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(btnRegisStudent, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnConcludeElect, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnRegisParty, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(8, 8, 8))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(lblGreeting, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 722, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnConcludeElect, javax.swing.GroupLayout.PREFERRED_SIZE, 728, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(126, 126, 126)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -124,8 +139,10 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRegisCandidate, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRegisStudent, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnConcludeElect, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                    .addComponent(btnRegisParty, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(btnConcludeElect, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -139,8 +156,9 @@ public class AdminDashboard extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(globalHeader2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -160,6 +178,11 @@ public class AdminDashboard extends javax.swing.JFrame {
         this.dispose();
         new plpvotingsystem.ManageStudentsForm(this.currentAdmin).setVisible(true);
     }//GEN-LAST:event_btnRegisStudentActionPerformed
+
+    private void btnRegisPartyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisPartyActionPerformed
+        this.dispose();
+        new plpvotingsystem.ManagePartylistsForm(this.currentAdmin).setVisible(true);
+    }//GEN-LAST:event_btnRegisPartyActionPerformed
 
     /**
      * @param args the command line arguments
@@ -199,6 +222,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConcludeElect;
     private javax.swing.JButton btnRegisCandidate;
+    private javax.swing.JButton btnRegisParty;
     private javax.swing.JButton btnRegisStudent;
     private plpvotingsystem.GlobalHeader globalHeader2;
     private javax.swing.JLabel jLabel2;

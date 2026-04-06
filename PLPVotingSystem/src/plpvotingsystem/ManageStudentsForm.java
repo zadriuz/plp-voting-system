@@ -54,6 +54,7 @@ public class ManageStudentsForm extends javax.swing.JFrame {
             }
         } catch (java.sql.SQLException e) {
             JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            return;
         }
     }
 
@@ -74,7 +75,6 @@ public class ManageStudentsForm extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Manage Voters Information");
         setBackground(new java.awt.Color(245, 245, 245));
-        setPreferredSize(new java.awt.Dimension(1018, 437));
         setResizable(false);
 
         globalHeader2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 60, 20, 60));
@@ -88,7 +88,7 @@ public class ManageStudentsForm extends javax.swing.JFrame {
         btnAddStudent.setBackground(new java.awt.Color(0, 255, 102));
         btnAddStudent.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnAddStudent.setForeground(new java.awt.Color(0, 0, 0));
-        btnAddStudent.setText("Register Student");
+        btnAddStudent.setText("Register Voter");
         btnAddStudent.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAddStudent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,7 +99,7 @@ public class ManageStudentsForm extends javax.swing.JFrame {
         btnEditStudent.setBackground(new java.awt.Color(250, 192, 45));
         btnEditStudent.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnEditStudent.setForeground(new java.awt.Color(0, 0, 0));
-        btnEditStudent.setText("Edit Student");
+        btnEditStudent.setText("Edit Voter");
         btnEditStudent.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnEditStudent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,7 +110,7 @@ public class ManageStudentsForm extends javax.swing.JFrame {
         btnDeleteStudent.setBackground(new java.awt.Color(255, 102, 102));
         btnDeleteStudent.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnDeleteStudent.setForeground(new java.awt.Color(0, 0, 0));
-        btnDeleteStudent.setText("Remove Student");
+        btnDeleteStudent.setText("Remove Voter");
         btnDeleteStudent.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnDeleteStudent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -193,7 +193,7 @@ public class ManageStudentsForm extends javax.swing.JFrame {
                         .addComponent(btnEditStudent)
                         .addGap(18, 18, 18)
                         .addComponent(btnDeleteStudent)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                         .addComponent(btnBack2Dashboard)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnRefresh))
@@ -206,7 +206,7 @@ public class ManageStudentsForm extends javax.swing.JFrame {
 
     private void btnAddStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStudentActionPerformed
         // 1. Trigger the Chameleon Form in "Create" mode (using the blank constructor)
-        plpvotingsystem.AdminGeneratorForm addForm = new plpvotingsystem.AdminGeneratorForm();
+        plpvotingsystem.AddStudentForm addForm = new plpvotingsystem.AddStudentForm();
 
         // 2. Attach a spy to wait for the form to close
         addForm.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -225,13 +225,13 @@ public class ManageStudentsForm extends javax.swing.JFrame {
         int selectedRow = tblStudentData.getSelectedRow();
 
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Select a student first to edit by clicking on their cell.", "Edit Candidate", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Select a student first to edit by clicking on their cell.", "Edit Candidate", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
             String selectedID = tblStudentData.getValueAt(selectedRow, 0).toString();
 
             // 1. Create the form but don't show it yet
-            plpvotingsystem.AdminGeneratorForm editForm = new plpvotingsystem.AdminGeneratorForm(selectedID);
+            plpvotingsystem.AddStudentForm editForm = new plpvotingsystem.AddStudentForm(selectedID);
             editForm.setLocationRelativeTo(null);
             editForm.setIconImage(plpIcon);
 
@@ -253,12 +253,12 @@ public class ManageStudentsForm extends javax.swing.JFrame {
         int selectedRow = tblStudentData.getSelectedRow();
 
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Select a student first to delete by clicking on their cell.", "Delete Student", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Select a student first to remove by clicking on their cell.", "Remove Student", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
             String data = tblStudentData.getValueAt(selectedRow, 0).toString();
 
-            int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this student?", "Select an Option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this student?", "Select an Option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
             if (adminChoice == JOptionPane.YES_OPTION) {
                 try (
@@ -266,11 +266,12 @@ public class ManageStudentsForm extends javax.swing.JFrame {
                     pst.setString(1, data);
                     pst.executeUpdate();
 
-                    JOptionPane.showMessageDialog(this, "Successfully deleted student.");
+                    JOptionPane.showMessageDialog(this, "Successfully removed student.");
 
                     loadStudentTable();
                 } catch (java.sql.SQLException e) {
                     JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                    return;
                 }
             }
         }

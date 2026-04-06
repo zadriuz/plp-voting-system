@@ -97,9 +97,9 @@ public class AddCandidateForm extends javax.swing.JFrame {
 
         txtFullName = new javax.swing.JTextField();
         cmbParty = new javax.swing.JComboBox<>();
-        btnChooseImg = new javax.swing.JButton();
+        btnChooseImg = new plpvotingsystem.RoundedButton();
         lblPath = new javax.swing.JLabel();
-        btnRegister = new javax.swing.JButton();
+        btnRegister = new plpvotingsystem.RoundedButton();
         lblCandidateName = new javax.swing.JLabel();
         lblCandidatePosition = new javax.swing.JLabel();
         lblCandidateParty = new javax.swing.JLabel();
@@ -114,12 +114,16 @@ public class AddCandidateForm extends javax.swing.JFrame {
         lblTitle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Register Candidate");
         setAlwaysOnTop(true);
         setResizable(false);
 
         cmbParty.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "United States Alliance", "" }));
 
+        btnChooseImg.setBackground(new java.awt.Color(204, 204, 204));
+        btnChooseImg.setForeground(new java.awt.Color(0, 0, 0));
         btnChooseImg.setText("Choose Image");
+        btnChooseImg.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnChooseImg.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnChooseImgActionPerformed(evt);
@@ -128,7 +132,9 @@ public class AddCandidateForm extends javax.swing.JFrame {
 
         lblPath.setText("Path:");
 
+        btnRegister.setBackground(new java.awt.Color(0, 255, 102));
         btnRegister.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnRegister.setForeground(new java.awt.Color(0, 0, 0));
         btnRegister.setText("Register");
         btnRegister.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnRegister.addActionListener(new java.awt.event.ActionListener() {
