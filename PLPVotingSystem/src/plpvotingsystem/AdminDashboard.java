@@ -4,26 +4,48 @@
  */
 package plpvotingsystem;
 
-/**
- *
- * @author PLP
- */
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
 public class AdminDashboard extends javax.swing.JFrame {
-    
+
     String currentAdmin = "";
-    
+
     public AdminDashboard(String adminName) {
         initComponents();
-        
+
         this.currentAdmin = adminName;
-        
+
         this.setLocationRelativeTo(null);
         java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
         this.setIconImage(plpIcon);
-        
-        this.getContentPane().setBackground(new java.awt.Color(245,245,245));
-        
+
+        this.getContentPane().setBackground(new java.awt.Color(245, 245, 245));
+
         lblGreeting.setText("Hello, " + adminName);
+
+        checkElectionStatus();
+    }
+
+    private void checkElectionStatus() {
+        try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("SELECT current_phase FROM tblElectionStatus WHERE status_id = 1")) {
+
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                String currentPhase = rs.getString("current_phase");
+
+                if (currentPhase.equals("CLOSED")) {
+                    btnConcludeElect.setEnabled(false);
+                    btnConcludeElect.setText("ELECTION CONCLUDED");
+                    // We leave everything else completely alone!
+                }
+            }
+        } catch (java.sql.SQLException e) {
+            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -165,8 +187,26 @@ public class AdminDashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConcludeElectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConcludeElectActionPerformed
-        this.dispose();
-        new plpvotingsystem.ElectionResultsForm().setVisible(true);
+        int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to conclude the elections?", "Conclude Elections", JOptionPane.WARNING_MESSAGE);
+
+        if (adminChoice == JOptionPane.YES_OPTION) {
+//            this.dispose();
+//            new plpvotingsystem.ElectionResultsForm(this.currentAdmin).setVisible(true);
+
+            try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("UPDATE tblElectionStatus SET current_phase = ? WHERE status_id = 1")) {
+                pst.setString(1, "CLOSED");
+
+                pst.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "Election has now been concluded.");
+
+                this.dispose();
+                new plpvotingsystem.AdminDashboard(this.currentAdmin).setVisible(true);
+
+            } catch (java.sql.SQLException e) {
+                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            }
+        }
     }//GEN-LAST:event_btnConcludeElectActionPerformed
 
     private void btnRegisCandidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisCandidateActionPerformed

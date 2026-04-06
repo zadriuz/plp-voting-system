@@ -337,25 +337,41 @@ public class LoginForm extends javax.swing.JFrame {
             }
 
             // --- CHECK 2: THE STUDENT LOGIN ---
-            String studentSql = "SELECT * FROM tblVoters WHERE student_number = ? AND BINARY passcode = ?";
-            try (PreparedStatement studentPst = conn.prepareStatement(studentSql)) {
-                studentPst.setString(1, studentNumber);
-                studentPst.setString(2, passCode);
-                ResultSet studentRs = studentPst.executeQuery();
+            try (Connection conn1 = database.DBConnection.DBConnect(); PreparedStatement pst1 = conn1.prepareStatement("SELECT current_phase FROM tblElectionStatus WHERE status_id = 1")) {
+                ResultSet rs = pst1.executeQuery();
 
-                if (studentRs.next()) {
-                    int has_voted = studentRs.getInt("has_voted");
+                if (rs.next()) {
+                    String currentPhase = rs.getString("current_phase");
 
-                    if (has_voted == 1) {
-                        JOptionPane.showMessageDialog(this, "You have already voted!");
+                    if (currentPhase.equals("CLOSED")) {
+                        JOptionPane.showMessageDialog(this, "The election has officially concluded. Voting is now closed.");
+                        return;
                     } else {
-                        this.dispose();
-                        new plpvotingsystem.StudentDashboard(studentNumber).setVisible(true);
+                        String studentSql = "SELECT * FROM tblVoters WHERE student_number = ? AND BINARY passcode = ?";
+                        try (PreparedStatement studentPst = conn.prepareStatement(studentSql)) {
+                            studentPst.setString(1, studentNumber);
+                            studentPst.setString(2, passCode);
+                            ResultSet studentRs = studentPst.executeQuery();
+
+                            if (studentRs.next()) {
+                                int has_voted = studentRs.getInt("has_voted");
+
+                                if (has_voted == 1) {
+                                    JOptionPane.showMessageDialog(this, "You have already voted!");
+                                } else {
+                                    this.dispose();
+                                    new plpvotingsystem.StudentDashboard(studentNumber).setVisible(true);
+                                }
+                            } else {
+                                // If it's not an admin AND not a student, kick them out.
+                                JOptionPane.showMessageDialog(this, "Invalid Username/Student # or Password");
+                            }
+                        }
                     }
-                } else {
-                    // If it's not an admin AND not a student, kick them out.
-                    JOptionPane.showMessageDialog(this, "Invalid Username/Student # or Password");
                 }
+            } catch (java.sql.SQLException e) {
+                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                return;
             }
 
         } catch (java.sql.SQLException e) {

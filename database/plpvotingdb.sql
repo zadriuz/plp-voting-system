@@ -92,7 +92,7 @@ CREATE TABLE `tblelectionstatus` (
 
 LOCK TABLES `tblelectionstatus` WRITE;
 /*!40000 ALTER TABLE `tblelectionstatus` DISABLE KEYS */;
-INSERT INTO `tblelectionstatus` VALUES (1,'CLOSED');
+INSERT INTO `tblelectionstatus` VALUES (1,'OPEN');
 /*!40000 ALTER TABLE `tblelectionstatus` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -206,4 +206,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-06 13:44:18
+-- Dump completed on 2026-04-06 18:54:06
