@@ -101,8 +101,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnManageCandidate.setBackground(new java.awt.Color(0, 255, 102));
         btnManageCandidate.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         btnManageCandidate.setForeground(new java.awt.Color(0, 0, 0));
+        btnManageCandidate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/manageCandidate.png"))); // NOI18N
         btnManageCandidate.setText("Manage Candidate Information");
         btnManageCandidate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnManageCandidate.setIconTextGap(10);
         btnManageCandidate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnManageCandidateActionPerformed(evt);
@@ -112,8 +114,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnManageVoter.setBackground(new java.awt.Color(250, 192, 45));
         btnManageVoter.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         btnManageVoter.setForeground(new java.awt.Color(0, 0, 0));
+        btnManageVoter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/manageVoter.png"))); // NOI18N
         btnManageVoter.setText("Manage Voter Information");
         btnManageVoter.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnManageVoter.setIconTextGap(10);
         btnManageVoter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnManageVoterActionPerformed(evt);
@@ -127,8 +131,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnConcludeElect.setBackground(new java.awt.Color(255, 102, 102));
         btnConcludeElect.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         btnConcludeElect.setForeground(new java.awt.Color(0, 0, 0));
+        btnConcludeElect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/voteIcon.png"))); // NOI18N
         btnConcludeElect.setText("Conclude Elections");
         btnConcludeElect.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnConcludeElect.setIconTextGap(15);
         btnConcludeElect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnConcludeElectActionPerformed(evt);
@@ -142,8 +148,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnManageParty.setBackground(new java.awt.Color(0, 255, 102));
         btnManageParty.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         btnManageParty.setForeground(new java.awt.Color(0, 0, 0));
+        btnManageParty.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/manageParty.png"))); // NOI18N
         btnManageParty.setText("Manage Partylist Information");
         btnManageParty.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnManageParty.setIconTextGap(10);
         btnManageParty.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnManagePartyActionPerformed(evt);
@@ -153,8 +161,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnManagePosition.setBackground(new java.awt.Color(250, 192, 45));
         btnManagePosition.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         btnManagePosition.setForeground(new java.awt.Color(0, 0, 0));
+        btnManagePosition.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/managePosition.png"))); // NOI18N
         btnManagePosition.setText("Manage Position Information");
         btnManagePosition.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnManagePosition.setIconTextGap(10);
         btnManagePosition.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnManagePositionActionPerformed(evt);
@@ -168,22 +178,20 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(lblGreeting, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 722, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnManageCandidate, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnManageVoter)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnManageParty)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnManagePosition))))
-                    .addComponent(btnConcludeElect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnManageCandidate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnManageVoter)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnManageParty)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnManagePosition))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnConcludeElect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblGreeting, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(

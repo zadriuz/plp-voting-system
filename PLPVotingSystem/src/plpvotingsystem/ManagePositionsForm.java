@@ -80,8 +80,10 @@ public class ManagePositionsForm extends javax.swing.JFrame {
         btnAddPosition.setBackground(new java.awt.Color(0, 255, 102));
         btnAddPosition.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnAddPosition.setForeground(new java.awt.Color(0, 0, 0));
+        btnAddPosition.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/addPosition.png"))); // NOI18N
         btnAddPosition.setText("Register Position");
         btnAddPosition.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAddPosition.setIconTextGap(10);
         btnAddPosition.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddPositionActionPerformed(evt);
@@ -91,8 +93,10 @@ public class ManagePositionsForm extends javax.swing.JFrame {
         btnEditPosition.setBackground(new java.awt.Color(250, 192, 45));
         btnEditPosition.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnEditPosition.setForeground(new java.awt.Color(0, 0, 0));
+        btnEditPosition.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/editPosition.png"))); // NOI18N
         btnEditPosition.setText("Edit Position");
         btnEditPosition.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEditPosition.setIconTextGap(10);
         btnEditPosition.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditPositionActionPerformed(evt);
@@ -102,8 +106,10 @@ public class ManagePositionsForm extends javax.swing.JFrame {
         btnRemovePosition.setBackground(new java.awt.Color(255, 102, 102));
         btnRemovePosition.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnRemovePosition.setForeground(new java.awt.Color(0, 0, 0));
+        btnRemovePosition.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/deletePosition.png"))); // NOI18N
         btnRemovePosition.setText("Remove Position");
         btnRemovePosition.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRemovePosition.setIconTextGap(10);
         btnRemovePosition.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemovePositionActionPerformed(evt);

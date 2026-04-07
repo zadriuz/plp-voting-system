@@ -116,8 +116,10 @@ public class ManagePartylistsForm extends javax.swing.JFrame {
         btnEditParty.setBackground(new java.awt.Color(250, 192, 45));
         btnEditParty.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnEditParty.setForeground(new java.awt.Color(0, 0, 0));
+        btnEditParty.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/editParty.png"))); // NOI18N
         btnEditParty.setText("Edit Partylist");
         btnEditParty.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEditParty.setIconTextGap(10);
         btnEditParty.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditPartyActionPerformed(evt);
@@ -138,8 +140,10 @@ public class ManagePartylistsForm extends javax.swing.JFrame {
         btnAddParty.setBackground(new java.awt.Color(0, 255, 102));
         btnAddParty.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnAddParty.setForeground(new java.awt.Color(0, 0, 0));
+        btnAddParty.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/addParty.png"))); // NOI18N
         btnAddParty.setText("Register Partylist");
         btnAddParty.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAddParty.setIconTextGap(10);
         btnAddParty.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddPartyActionPerformed(evt);
@@ -149,8 +153,10 @@ public class ManagePartylistsForm extends javax.swing.JFrame {
         btnRemoveParty.setBackground(new java.awt.Color(255, 102, 102));
         btnRemoveParty.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnRemoveParty.setForeground(new java.awt.Color(0, 0, 0));
+        btnRemoveParty.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/removeParty.png"))); // NOI18N
         btnRemoveParty.setText("Remove Partylist");
         btnRemoveParty.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRemoveParty.setIconTextGap(10);
         btnRemoveParty.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemovePartyActionPerformed(evt);

@@ -94,8 +94,10 @@ public class ManageStudentsForm extends javax.swing.JFrame {
         btnAddStudent.setBackground(new java.awt.Color(0, 255, 102));
         btnAddStudent.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnAddStudent.setForeground(new java.awt.Color(0, 0, 0));
+        btnAddStudent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/addUser.png"))); // NOI18N
         btnAddStudent.setText("Register Voter");
         btnAddStudent.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAddStudent.setIconTextGap(10);
         btnAddStudent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddStudentActionPerformed(evt);
@@ -105,8 +107,10 @@ public class ManageStudentsForm extends javax.swing.JFrame {
         btnEditStudent.setBackground(new java.awt.Color(250, 192, 45));
         btnEditStudent.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnEditStudent.setForeground(new java.awt.Color(0, 0, 0));
+        btnEditStudent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/editUser.png"))); // NOI18N
         btnEditStudent.setText("Edit Voter");
         btnEditStudent.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEditStudent.setIconTextGap(10);
         btnEditStudent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditStudentActionPerformed(evt);
@@ -116,8 +120,10 @@ public class ManageStudentsForm extends javax.swing.JFrame {
         btnDeleteStudent.setBackground(new java.awt.Color(255, 102, 102));
         btnDeleteStudent.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnDeleteStudent.setForeground(new java.awt.Color(0, 0, 0));
+        btnDeleteStudent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/removeUser.png"))); // NOI18N
         btnDeleteStudent.setText("Remove Voter");
         btnDeleteStudent.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDeleteStudent.setIconTextGap(10);
         btnDeleteStudent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteStudentActionPerformed(evt);
