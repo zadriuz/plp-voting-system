@@ -167,6 +167,11 @@ public class ElectionResultsForm extends javax.swing.JFrame {
                         voteBar.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
                         voteBar.setForeground(new java.awt.Color(250, 192, 45)); // PLP Yellow
                         voteBar.setUI(new javax.swing.plaf.basic.BasicProgressBarUI());
+
+                        // --- THE FIX: Force the text to be black regardless of the juice level ---
+                        javax.swing.UIManager.put("ProgressBar.selectionForeground", java.awt.Color.BLACK);
+                        javax.swing.UIManager.put("ProgressBar.selectionBackground", java.awt.Color.BLACK);
+
                         voteBar.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 25));
 
                         // Snap the bar into the category panel
@@ -359,8 +364,10 @@ public class ElectionResultsForm extends javax.swing.JFrame {
         btnReopen.setBackground(new java.awt.Color(0, 255, 102));
         btnReopen.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnReopen.setForeground(new java.awt.Color(0, 0, 0));
+        btnReopen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/voteIcon.png"))); // NOI18N
         btnReopen.setText("Reopen Elections");
         btnReopen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReopen.setIconTextGap(15);
         btnReopen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReopenActionPerformed(evt);
