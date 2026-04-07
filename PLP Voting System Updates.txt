@@ -66,4 +66,5 @@ Program the Conclude Elections
 - Make it so when elections are ongoing, manage positions button is disabled, that a good idea? [DONE]
 - When selecting a candidate, there's some large space just after the party list name. [DONE]
 
-SEARCH FEATURE AND/OR FILTER BY: (FOR STUDENTS AND/OR CANDIDATES) [DONE]
+SEARCH FEATURE AND/OR FILTER BY: (FOR STUDENTS AND/OR CANDIDATES)
+- MAKE THE DASHBOARD VIEW ONLY IF USER HAS VOTED AND MARK (+1) if they voted for that candidate [DONE]
