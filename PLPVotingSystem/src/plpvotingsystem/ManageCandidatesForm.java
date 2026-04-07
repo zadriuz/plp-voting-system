@@ -18,19 +18,19 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
 
     int candidateID;
     java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
-    
+
     String currentAdmin = "";
 
     public ManageCandidatesForm(String adminName) {
         initComponents();
 
         this.setLocationRelativeTo(null);
-        
+
         this.setIconImage(plpIcon);
-        
+
         this.currentAdmin = adminName;
-        
-        this.getContentPane().setBackground(new java.awt.Color(245,245,245));
+
+        this.getContentPane().setBackground(new java.awt.Color(245, 245, 245));
 
         loadCandidateTable();
     }
@@ -81,6 +81,10 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
         btnRefresh = new plpvotingsystem.RoundedButton();
         jLabel2 = new javax.swing.JLabel();
         btnBack2Dashboard = new plpvotingsystem.RoundedButton();
+        lblSearch = new javax.swing.JLabel();
+        txtSearch = new javax.swing.JTextField();
+        lblFilterBy = new javax.swing.JLabel();
+        cmbFilterBy = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Manage Candidates");
@@ -170,6 +174,32 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
             }
         });
 
+        lblSearch.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblSearch.setForeground(new java.awt.Color(0, 0, 0));
+        lblSearch.setText("Search:");
+
+        txtSearch.setBackground(new java.awt.Color(255, 255, 255));
+        txtSearch.setForeground(new java.awt.Color(0, 0, 0));
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchKeyReleased(evt);
+            }
+        });
+
+        lblFilterBy.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblFilterBy.setForeground(new java.awt.Color(0, 0, 0));
+        lblFilterBy.setText("Filter By:");
+
+        cmbFilterBy.setBackground(new java.awt.Color(255, 255, 255));
+        cmbFilterBy.setForeground(new java.awt.Color(0, 0, 0));
+        cmbFilterBy.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "Party List", "Position ID" }));
+        cmbFilterBy.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cmbFilterBy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbFilterByActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,7 +209,16 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(lblFilterBy)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cmbFilterBy, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnAddCandidate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -194,7 +233,13 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(globalHeader2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblSearch)
+                    .addComponent(lblFilterBy)
+                    .addComponent(cmbFilterBy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -220,30 +265,36 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     private void btnDeleteCandidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteCandidateActionPerformed
-        int selectedRow = tblCandidateData.getSelectedRow();
+        // 1. Get ALL selected rows (allows multi-select with Ctrl/Shift)
+        int[] selectedRows = tblCandidateData.getSelectedRows();
 
-        if (selectedRow == -1) {
+        if (selectedRows.length == 0) {
             JOptionPane.showMessageDialog(this, "Select a candidate first to remove by clicking on their cell.", "Remove Candidate", JOptionPane.ERROR_MESSAGE);
             return;
-        } else {
-            String data = tblCandidateData.getValueAt(selectedRow, 0).toString();
-            int dataNum = Integer.parseInt(data);
+        }
 
-            int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this candidate?", "Select an Option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the " + selectedRows.length + " selected candidate(s)?", "Confirm Deletion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-            if (adminChoice == JOptionPane.YES_OPTION) {
-                try (
-                        Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("DELETE FROM tblCandidates WHERE candidate_id = ?")) {
-                    pst.setInt(1, dataNum);
-                    pst.executeUpdate();
+        if (adminChoice == JOptionPane.YES_OPTION) {
+            try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("DELETE FROM tblCandidates WHERE candidate_id = ?")) {
 
-                    JOptionPane.showMessageDialog(this, "Successfully removed candidate.");
+                for (int i = 0; i < selectedRows.length; i++) {
+                    // THE MAGIC TRANSLATOR! Crucial when using a Search Filter!
+                    int modelRow = tblCandidateData.convertRowIndexToModel(selectedRows[i]);
 
-                    loadCandidateTable();
-                } catch (java.sql.SQLException e) {
-                    JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
-                    return;
+                    // Grab Candidate ID from Column 0
+                    String data = tblCandidateData.getModel().getValueAt(modelRow, 0).toString();
+
+                    pst.setInt(1, Integer.parseInt(data));
+                    pst.addBatch();
                 }
+
+                pst.executeBatch();
+                JOptionPane.showMessageDialog(this, "Successfully removed " + selectedRows.length + " candidate(s).");
+                loadCandidateTable();
+
+            } catch (java.sql.SQLException e) {
+                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
             }
         }
     }//GEN-LAST:event_btnDeleteCandidateActionPerformed
@@ -255,7 +306,8 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Select a candidate first to edit by clicking on their cell.", "Edit Candidate", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
-            String data = tblCandidateData.getValueAt(selectedRow, 0).toString();
+            int modelRow = tblCandidateData.convertRowIndexToModel(selectedRow);
+            String data = tblCandidateData.getModel().getValueAt(modelRow, 0).toString();
             int selectedID = Integer.parseInt(data);
 
             // 1. Create the form but don't show it yet
@@ -280,7 +332,7 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
     private void btnAddCandidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCandidateActionPerformed
         // 1. Trigger the Chameleon Form in "Create" mode (using the blank constructor)
         plpvotingsystem.AddCandidateForm addForm = new plpvotingsystem.AddCandidateForm();
-        
+
         // 2. Attach a spy to wait for the form to close
         addForm.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -289,7 +341,7 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
                 loadCandidateTable();
             }
         });
-        
+
         // 4. Show the form to the admin
         addForm.setVisible(true);
     }//GEN-LAST:event_btnAddCandidateActionPerformed
@@ -298,6 +350,33 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
         this.dispose();
         new plpvotingsystem.AdminDashboard(this.currentAdmin).setVisible(true);
     }//GEN-LAST:event_btnBack2DashboardActionPerformed
+
+    private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
+        String searchText = txtSearch.getText();
+        String filterBy = cmbFilterBy.getSelectedItem().toString();
+
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblCandidateData.getModel();
+        javax.swing.table.TableRowSorter<javax.swing.table.DefaultTableModel> trs = new javax.swing.table.TableRowSorter<>(model);
+        tblCandidateData.setRowSorter(trs);
+
+        if (searchText.trim().length() == 0) {
+            trs.setRowFilter(null);
+        } else {
+            // Check the combobox for Candidates!
+            if (filterBy.equals("Party List")) {
+                trs.setRowFilter(javax.swing.RowFilter.regexFilter("(?i)" + searchText, 2)); // Column 2
+            } else if (filterBy.equals("Position ID")) {
+                trs.setRowFilter(javax.swing.RowFilter.regexFilter("(?i)" + searchText, 3)); // Column 3
+            } else {
+                // "None" selected - search everything! (Omit the column index parameter)
+                trs.setRowFilter(javax.swing.RowFilter.regexFilter("(?i)" + searchText));
+            }
+        }
+    }//GEN-LAST:event_txtSearchKeyReleased
+
+    private void cmbFilterByActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbFilterByActionPerformed
+        txtSearchKeyReleased(null);
+    }//GEN-LAST:event_cmbFilterByActionPerformed
 
     /**
      * @param args the command line arguments
@@ -340,9 +419,13 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
     private javax.swing.JButton btnDeleteCandidate;
     private javax.swing.JButton btnEditCandidate;
     private javax.swing.JButton btnRefresh;
+    private javax.swing.JComboBox<String> cmbFilterBy;
     private plpvotingsystem.GlobalHeader globalHeader2;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblFilterBy;
+    private javax.swing.JLabel lblSearch;
     private javax.swing.JTable tblCandidateData;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

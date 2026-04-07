@@ -65,3 +65,5 @@ Program the Conclude Elections
 - Back to fixing the bleed in review page. I recall we had this problem before in the voting form, analyze the voting form and maybe you'll find out the solution [DONE]
 - Make it so when elections are ongoing, manage positions button is disabled, that a good idea? [DONE]
 - When selecting a candidate, there's some large space just after the party list name. [DONE]
+
+SEARCH FEATURE AND/OR FILTER BY: (FOR STUDENTS AND/OR CANDIDATES) [DONE]
