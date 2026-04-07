@@ -232,7 +232,7 @@ public class ManagePartylistsForm extends javax.swing.JFrame {
         int selectedRow = tblPartyData.getSelectedRow();
         
         if(selectedRow < 0){
-            JOptionPane.showMessageDialog(this, "Please select a party to delete", "Select a partylist", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please select a party to remove", "Select a partylist", JOptionPane.ERROR_MESSAGE);
             return;
         } else{
             String selectedParty = tblPartyData.getValueAt(selectedRow, 0).toString();
@@ -253,7 +253,7 @@ public class ManagePartylistsForm extends javax.swing.JFrame {
                         int returnedValue = rs.getInt("COUNT(*)");
                         
                         if (returnedValue > 0){
-                            JOptionPane.showMessageDialog(this, "Cannot delete: There are " + returnedValue + " candidates currently running under this party. Reassign or delete them first.");
+                            JOptionPane.showMessageDialog(this, "Cannot remove: There are " + returnedValue + " candidates currently running under this party. Reassign or remove them first.");
                             return;
                         }
                         

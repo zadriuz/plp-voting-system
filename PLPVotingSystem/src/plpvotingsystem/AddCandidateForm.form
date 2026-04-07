@@ -218,13 +218,8 @@
     <Component class="javax.swing.JComboBox" name="cmbCandidatePosition">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="6">
-            <StringItem index="0" value="President"/>
-            <StringItem index="1" value="Vice President"/>
-            <StringItem index="2" value="Secretary"/>
-            <StringItem index="3" value="Treasurer"/>
-            <StringItem index="4" value="Auditor"/>
-            <StringItem index="5" value="P.R.O."/>
+          <StringArray count="1">
+            <StringItem index="0" value=" "/>
           </StringArray>
         </Property>
       </Properties>

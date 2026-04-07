@@ -16,14 +16,16 @@ import java.sql.ResultSet;
 public class AddCandidateForm extends javax.swing.JFrame {
 
     int currentCandidateID = 0;
+    int assignedPositionID = 0;
 
     public AddCandidateForm() {
         initComponents();
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         this.getRootPane().setDefaultButton(btnRegister);
         loadPartyLists();
-        
-        this.getContentPane().setBackground(new java.awt.Color(245,245,245));
+        loadPositionsDropdown();
+
+        this.getContentPane().setBackground(new java.awt.Color(245, 245, 245));
 
         this.setLocationRelativeTo(null);
         java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
@@ -34,12 +36,30 @@ public class AddCandidateForm extends javax.swing.JFrame {
         initComponents();
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         loadPartyLists();
+        loadPositionsDropdown();
+
         this.getRootPane().setDefaultButton(btnRegister);
         this.currentCandidateID = candidateID;
         lblTitle.setText("Edit Candidate");
         btnRegister.setText("Update");
 
         loadExistingData();
+    }
+
+    private void loadPositionsDropdown() {
+        cmbCandidatePosition.removeAllItems();
+
+        try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("SELECT position_name FROM tblPositions ORDER BY position_id ASC")) {
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                String position = rs.getString("position_name");
+                cmbCandidatePosition.addItem(position);
+            }
+        } catch (java.sql.SQLException e) {
+            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            return;
+        }
     }
 
     private void loadExistingData() {
@@ -56,26 +76,12 @@ public class AddCandidateForm extends javax.swing.JFrame {
                 String imagePath = rs.getString("image_path");
 
                 String position = "";
-
-                switch (positionID) {
-                    case 1:
-                        position = "President";
-                        break;
-                    case 2:
-                        position = "Vice President";
-                        break;
-                    case 3:
-                        position = "Secretary";
-                        break;
-                    case 4:
-                        position = "Treasurer";
-                        break;
-                    case 5:
-                        position = "Auditor";
-                        break;
-                    case 6:
-                        position = "P.R.O.";
-                        break;
+                try (PreparedStatement pstPos = conn.prepareStatement("SELECT position_name FROM tblPositions WHERE position_id = ?")) {
+                    pstPos.setInt(1, positionID);
+                    ResultSet rsPos = pstPos.executeQuery();
+                    if (rsPos.next()) {
+                        position = rsPos.getString("position_name");
+                    }
                 }
 
                 txtFullName.setText(fullName);
@@ -155,7 +161,7 @@ public class AddCandidateForm extends javax.swing.JFrame {
         lblCandidatePic.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblCandidatePic.setText("Candidate's Picture:");
 
-        cmbCandidatePosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "President", "Vice President", "Secretary", "Treasurer", "Auditor", "P.R.O." }));
+        cmbCandidatePosition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
 
         txtPlataporma.setColumns(20);
         txtPlataporma.setRows(5);
@@ -327,14 +333,26 @@ public class AddCandidateForm extends javax.swing.JFrame {
 
         // 2. Convert the dropdown text into the correct position_id (1 to 6)
         // 2. Convert the dropdown directly to the position_id (Index 0 = President(1), Index 5 = P.R.O.(6))
-        int positionId = cmbCandidatePosition.getSelectedIndex() + 1;
-
         // 3. Database Insertion
         if (currentCandidateID == 0) {
+            String selectedPosName = cmbCandidatePosition.getSelectedItem().toString();
+
+            try (Connection conn0 = database.DBConnection.DBConnect(); PreparedStatement pst0 = conn0.prepareStatement("SELECT position_id FROM tblPositions WHERE position_name = ?")) {
+                pst0.setString(1, selectedPosName);
+                ResultSet rs = pst0.executeQuery();
+
+                if (rs.next()) {
+                    assignedPositionID = rs.getInt("position_id");
+                }
+            } catch (java.sql.SQLException e) {
+                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                return;
+            }
+
             try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("INSERT INTO tblCandidates (full_name, position_id, party_list, image_path, plataporma, credentials) VALUES (?, ?, ?, ?, ?, ?)")) {
 
                 pst.setString(1, fullName);
-                pst.setInt(2, positionId);
+                pst.setInt(2, assignedPositionID);
                 pst.setString(3, party);
                 // Replace single backslashes with double backslashes so Java/SQL doesn't crash reading the path
                 pst.setString(4, imagePath);
@@ -342,9 +360,9 @@ public class AddCandidateForm extends javax.swing.JFrame {
                 pst.setString(6, credentials);
 
                 pst.executeUpdate();
-                
+
                 JOptionPane.showMessageDialog(this, "Candidate Successfully Added!");
-                    this.dispose(); // Closes the Edit popup so they return to the Manager table!
+                this.dispose(); // Closes the Edit popup so they return to the Manager table!
 
                 // Reset the form for the next candidate
                 txtFullName.setText("");
@@ -355,21 +373,21 @@ public class AddCandidateForm extends javax.swing.JFrame {
             } catch (java.sql.SQLException e) {
                 JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
             }
-        } else{
-            try(Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("UPDATE tblCandidates SET full_name = ?, position_id = ?, party_list = ?, image_path = ?, plataporma = ?, credentials = ? WHERE candidate_id = ?")){
+        } else {
+            try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("UPDATE tblCandidates SET full_name = ?, position_id = ?, party_list = ?, image_path = ?, plataporma = ?, credentials = ? WHERE candidate_id = ?")) {
                 pst.setString(1, fullName);
-                pst.setInt(2, positionId);
+                pst.setInt(2, assignedPositionID);
                 pst.setString(3, party);
                 pst.setString(4, imagePath);
                 pst.setString(5, plataporma);
                 pst.setString(6, credentials);
                 pst.setInt(7, this.currentCandidateID);
-                
+
                 pst.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Candidate Successfully Updated!");
-                    this.dispose(); // Closes the Edit popup so they return to the Manager table!
-                
-            } catch(java.sql.SQLException e){
+                this.dispose(); // Closes the Edit popup so they return to the Manager table!
+
+            } catch (java.sql.SQLException e) {
                 JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
             }
         }

@@ -16,48 +16,44 @@ import javax.swing.JPanel;
 
 public class VotingForm extends javax.swing.JFrame {
 
-    int currentPositionID = 1;
+    // --- DYNAMIC POSITION TRACKERS ---
+    int currentStepIndex = 0; // Starts at 0 (first position)
+    int totalPositions = 0; 
+    java.util.List<Integer> positionIds = new java.util.ArrayList<>();
+    java.util.List<String> positionNames = new java.util.ArrayList<>();
+    
+    String[] candidateChoices; // We will size this dynamically!
+
     plpvotingsystem.RoundedButton customBtnBack;
     plpvotingsystem.RoundedButton customBtnNext;
     plpvotingsystem.VotingStepper stepper;
     ButtonGroup groupCandidates = new ButtonGroup();
+    String loggedInStudent;
 
-    String[] candidateChoices = new String[6];
-
-    private void loadCandidates(int positionID) {
+    private void loadCandidates(int stepIndex) {
         pnlCandidates.removeAll();
         groupCandidates = new ButtonGroup();
-        stepper.setStep(positionID);
+        stepper.setStep(stepIndex + 1); // Visual stepper still uses 1-based indexing
 
-        if (positionID == 1) {
-            lblPositionTitle.setText("Vote for President");
-        } else if (positionID == 2) {
-            lblPositionTitle.setText("Vote for Vice President");
-        } else if (positionID == 3) {
-            lblPositionTitle.setText("Vote for Secretary");
-        } else if (positionID == 4) {
-            lblPositionTitle.setText("Vote for Treasurer");
-        } else if (positionID == 5) {
-            lblPositionTitle.setText("Vote for Auditor");
-        } else if (positionID == 6) {
-            lblPositionTitle.setText("Vote for P.R.O");
-        }
+        // Fetch the real ID and Name for this specific step!
+        int realPositionId = positionIds.get(stepIndex);
+        String realPositionName = positionNames.get(stepIndex);
+
+        lblPositionTitle.setText("Vote for " + realPositionName);
 
         customBtnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         customBtnNext.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         try (
                 Connection conn = database.DBConnection.DBConnect(); 
-                // BUCKET LIST #6 ACHIEVED: The ORDER BY CASE statement forces 'Abstain' to be evaluated as '1' (bottom of the list) and everyone else as '0' (top of the list), then sorts alphabetically!
                 PreparedStatement pst = conn.prepareStatement("SELECT full_name, party_list, credentials, plataporma, image_path FROM tblCandidates WHERE position_id = ? ORDER BY CASE WHEN full_name = 'Abstain' THEN 1 ELSE 0 END, full_name ASC")
         ) {
-            pst.setInt(1, positionID);
+            pst.setInt(1, realPositionId); // Use the dynamic ID!
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
                 String fullName = rs.getString("full_name");
                 
-                // GHOST BUSTER: If a blank candidate accidentally sneaked into the database, ignore them completely!
                 if (fullName == null || fullName.trim().isEmpty()) {
                     continue; 
                 }
@@ -67,33 +63,29 @@ public class VotingForm extends javax.swing.JFrame {
                 String platform = rs.getString("plataporma");
                 String path = rs.getString("image_path");
 
-                // 1. Check if this candidate was already chosen previously
+                // Check if this candidate was already chosen previously
                 boolean isAlreadyChosen = false;
-                if (candidateChoices[currentPositionID - 1] != null && candidateChoices[currentPositionID - 1].equals(fullName)) {
+                if (candidateChoices[stepIndex] != null && candidateChoices[stepIndex].equals(fullName)) {
                     isAlreadyChosen = true;
                 }
 
-                // 2. Handle the "Abstain" party text gracefully
                 String displayParty = partyList;
                 if (fullName.equals("Abstain") || partyList == null) {
                     displayParty = "No Vote Cast";
                 }
 
-                // 3. Instantiate your beautiful new custom card!
                 plpvotingsystem.CandidateOptionCard myCard = new plpvotingsystem.CandidateOptionCard(fullName, displayParty, groupCandidates, isAlreadyChosen, creds, platform, path);
 
-                // 4. THE ANTI-SQUISH SHIELD: Force strict sizing so the layout manager cannot crush the card and cut off the icon!
-                myCard.setPreferredSize(new java.awt.Dimension(600, 120));
-                myCard.setMinimumSize(new java.awt.Dimension(200, 120));
-                myCard.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 120));
+                myCard.setPreferredSize(new java.awt.Dimension(800, 85)); // orig: 600,120
+                myCard.setMinimumSize(new java.awt.Dimension(200, 85)); // orig: 200, 120
+                myCard.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 85)); // orig: max value, 85
                 myCard.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
 
-                // 5. Add it to the ballot
                 pnlCandidates.add(myCard);
                 pnlCandidates.add(javax.swing.Box.createVerticalStrut(15));
             }
+            pnlCandidates.add(javax.swing.Box.createVerticalGlue());
             
-            // CRITICAL: revalidate() MUST come before repaint() so the scroll pane knows the interior height has changed!
             pnlCandidates.revalidate();
             pnlCandidates.repaint();
             
@@ -102,19 +94,17 @@ public class VotingForm extends javax.swing.JFrame {
             return;
         }
 
-        if (positionID == 6) {
+        // Dynamic Next Button Check
+        if (stepIndex == totalPositions - 1) {
             customBtnNext.setText("Review Votes");
         } else {
             customBtnNext.setText("Next");
         }
     }
 
-    String loggedInStudent;
-
     public void restoreChoices(String[] previousChoices) {
         this.candidateChoices = previousChoices;
-        // Reload page 1 so the radio button automatically selects the saved candidate!
-        loadCandidates(currentPositionID);
+        loadCandidates(currentStepIndex); // Reload current page
     }
 
     public VotingForm(String studentNumber) {
@@ -122,6 +112,21 @@ public class VotingForm extends javax.swing.JFrame {
 
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         this.getContentPane().removeAll();
+        
+        // --- FETCH DYNAMIC POSITIONS ---
+        try (Connection conn = database.DBConnection.DBConnect(); 
+             PreparedStatement pst = conn.prepareStatement("SELECT position_id, position_name FROM tblPositions ORDER BY position_id ASC")) {
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                positionIds.add(rs.getInt("position_id"));
+                positionNames.add(rs.getString("position_name"));
+            }
+        } catch (java.sql.SQLException e) {
+            JOptionPane.showMessageDialog(this, "Failed to load ballot positions: " + e.getMessage());
+        }
+        
+        totalPositions = positionIds.size();
+        candidateChoices = new String[totalPositions]; // Sizes the array perfectly!
 
         java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
         this.setIconImage(plpIcon);
@@ -138,7 +143,7 @@ public class VotingForm extends javax.swing.JFrame {
         pnlMain.setBackground(new java.awt.Color(245, 245, 245));
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(30, 100, 30, 100));
 
-        stepper = new plpvotingsystem.VotingStepper();
+        stepper = new plpvotingsystem.VotingStepper(positionNames);
         stepper.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
 
         // 1. Build the white wrapper card
@@ -169,7 +174,7 @@ public class VotingForm extends javax.swing.JFrame {
         // Configure the raw panel first
         pnlCandidates.setOpaque(false);
         pnlCandidates.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
-        pnlCandidates.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 20, 20));
+        pnlCandidates.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 20));
         pnlCandidates.setLayout(new javax.swing.BoxLayout(pnlCandidates, javax.swing.BoxLayout.Y_AXIS));
 
         // 6. WRAP IT IN A CUSTOM SCROLL PANE!
@@ -240,14 +245,14 @@ public class VotingForm extends javax.swing.JFrame {
         // This pnlTitleBox now contains: Title, Subtitle, AND pnlCandidates
         pnlMain.add(pnlTitleBox);
 
-        pnlMain.add(javax.swing.Box.createVerticalGlue()); // Push buttons to the bottom
+        pnlMain.add(javax.swing.Box.createVerticalStrut(30));
         pnlMain.add(buttonRow);
 
         // 4. Add the finished pnlMain to the frame ONLY ONCE
         this.getContentPane().add(pnlMain, java.awt.BorderLayout.CENTER);
 
         loggedInStudent = studentNumber;
-        loadCandidates(currentPositionID);
+        loadCandidates(currentStepIndex);
     }
 
     @SuppressWarnings("unchecked")
@@ -322,27 +327,30 @@ public class VotingForm extends javax.swing.JFrame {
             return;
         } else {
             String chosenCandidate = groupCandidates.getSelection().getActionCommand();
-            candidateChoices[currentPositionID - 1] = chosenCandidate;
+            candidateChoices[currentStepIndex] = chosenCandidate;
         }
 
-        if (currentPositionID < 6) {
-            currentPositionID++;
-            if (currentPositionID > 1) {
+        // If we have more positions to go...
+        if (currentStepIndex < totalPositions - 1) {
+            currentStepIndex++;
+            if (currentStepIndex > 0) {
                 customBtnBack.setVisible(true);
             }
-            loadCandidates(currentPositionID);
+            loadCandidates(currentStepIndex);
         } else {
+            // WE ARE DONE! Go to Review Page!
             this.dispose();
-            new plpvotingsystem.ReviewPage(loggedInStudent, candidateChoices).setVisible(true);
+            // WARNING: This line will show an error until we update ReviewPage.java next!
+            new plpvotingsystem.ReviewPage(loggedInStudent, candidateChoices, positionIds, positionNames).setVisible(true);
         }
     }//GEN-LAST:event_btnNextActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        currentPositionID--;
-        if (currentPositionID == 1) {
+        currentStepIndex--;
+        if (currentStepIndex == 0) {
             customBtnBack.setVisible(false);
         }
-        loadCandidates(currentPositionID);
+        loadCandidates(currentStepIndex);
     }//GEN-LAST:event_btnBackActionPerformed
 
     /**

@@ -76,6 +76,8 @@ public class CandidateOptionCard extends plpvotingsystem.RoundedPanel {
         pnlText.add(candidateName);
         pnlText.add(javax.swing.Box.createVerticalStrut(5));
         pnlText.add(partylistName);
+        
+        pnlText.add(javax.swing.Box.createVerticalGlue());
 
         this.add(pnlText, java.awt.BorderLayout.CENTER);
 
@@ -89,7 +91,7 @@ public class CandidateOptionCard extends plpvotingsystem.RoundedPanel {
                     CandidateOptionCard.this.setBorder(javax.swing.BorderFactory.createCompoundBorder(
                             // Use your brand new custom rounded border with a 20-pixel radius!
                             new plpvotingsystem.RoundedLineBorder(new java.awt.Color(46, 125, 50), 20),
-                            javax.swing.BorderFactory.createEmptyBorder(13, 18, 13, 18)
+                            javax.swing.BorderFactory.createEmptyBorder(13, 18, 13, 18) // bottom originally 13
                     ));
                 } else {
                     // Revert to the standard invisible padding when deselected

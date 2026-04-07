@@ -15,6 +15,31 @@ public class AdminDashboard extends javax.swing.JFrame {
 
     public AdminDashboard(String adminName) {
         initComponents();
+        
+        try(Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("SELECT * FROM tblElectionStatus")){
+            ResultSet rs = pst.executeQuery();
+            
+            if(rs.next()){
+                String electionStatus = rs.getString("current_phase");
+                
+                if(electionStatus.equalsIgnoreCase("OPEN")){
+                    btnManageCandidate.setEnabled(false);
+                    btnManagePosition.setEnabled(false);
+                    
+                    btnManageCandidate.setBackground(new java.awt.Color(200, 200, 200));
+                    btnManagePosition.setBackground(new java.awt.Color(200, 200, 200));
+                } else{
+                    btnManageCandidate.setEnabled(true);
+                    btnManagePosition.setEnabled(true);
+                    
+                    btnManageCandidate.setBackground(new java.awt.Color(0,255,102));
+                    btnManagePosition.setBackground(new java.awt.Color(250,192,45));
+                }
+            }
+        }catch(java.sql.SQLException e){
+            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            return;
+        }
 
         this.currentAdmin = adminName;
 
@@ -38,9 +63,9 @@ public class AdminDashboard extends javax.swing.JFrame {
                 String currentPhase = rs.getString("current_phase");
 
                 if (currentPhase.equals("CLOSED")) {
-                    btnConcludeElect.setEnabled(false);
-                    btnConcludeElect.setText("ELECTION CONCLUDED");
-                    // We leave everything else completely alone!
+                    btnConcludeElect.setText("See Election Results");
+                    btnConcludeElect.setBackground(new java.awt.Color(55, 140, 59)); // PLP Green
+                    btnConcludeElect.setForeground(java.awt.Color.BLACK);
                 }
             }
         } catch (java.sql.SQLException e) {
@@ -54,12 +79,13 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         globalHeader2 = new plpvotingsystem.GlobalHeader();
         jPanel1 = new javax.swing.JPanel();
-        btnRegisCandidate = new plpvotingsystem.RoundedButton();
-        btnRegisStudent = new plpvotingsystem.RoundedButton();
+        btnManageCandidate = new plpvotingsystem.RoundedButton();
+        btnManageVoter = new plpvotingsystem.RoundedButton();
         jLabel2 = new javax.swing.JLabel();
         btnConcludeElect = new plpvotingsystem.RoundedButton();
         lblGreeting = new javax.swing.JLabel();
-        btnRegisParty = new plpvotingsystem.RoundedButton();
+        btnManageParty = new plpvotingsystem.RoundedButton();
+        btnManagePosition = new plpvotingsystem.RoundedButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Dashboard");
@@ -72,25 +98,25 @@ public class AdminDashboard extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(245, 245, 245));
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 80, 1, 80));
 
-        btnRegisCandidate.setBackground(new java.awt.Color(0, 255, 102));
-        btnRegisCandidate.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
-        btnRegisCandidate.setForeground(new java.awt.Color(0, 0, 0));
-        btnRegisCandidate.setText("Manage Candidate Information");
-        btnRegisCandidate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnRegisCandidate.addActionListener(new java.awt.event.ActionListener() {
+        btnManageCandidate.setBackground(new java.awt.Color(0, 255, 102));
+        btnManageCandidate.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        btnManageCandidate.setForeground(new java.awt.Color(0, 0, 0));
+        btnManageCandidate.setText("Manage Candidate Information");
+        btnManageCandidate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnManageCandidate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegisCandidateActionPerformed(evt);
+                btnManageCandidateActionPerformed(evt);
             }
         });
 
-        btnRegisStudent.setBackground(new java.awt.Color(250, 192, 45));
-        btnRegisStudent.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
-        btnRegisStudent.setForeground(new java.awt.Color(0, 0, 0));
-        btnRegisStudent.setText("Manage Voter Information");
-        btnRegisStudent.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnRegisStudent.addActionListener(new java.awt.event.ActionListener() {
+        btnManageVoter.setBackground(new java.awt.Color(250, 192, 45));
+        btnManageVoter.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        btnManageVoter.setForeground(new java.awt.Color(0, 0, 0));
+        btnManageVoter.setText("Manage Voter Information");
+        btnManageVoter.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnManageVoter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegisStudentActionPerformed(evt);
+                btnManageVoterActionPerformed(evt);
             }
         });
 
@@ -113,14 +139,25 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblGreeting.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblGreeting.setText("Hello");
 
-        btnRegisParty.setBackground(new java.awt.Color(0, 255, 102));
-        btnRegisParty.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
-        btnRegisParty.setForeground(new java.awt.Color(0, 0, 0));
-        btnRegisParty.setText("Manage Partylist Information");
-        btnRegisParty.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnRegisParty.addActionListener(new java.awt.event.ActionListener() {
+        btnManageParty.setBackground(new java.awt.Color(0, 255, 102));
+        btnManageParty.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        btnManageParty.setForeground(new java.awt.Color(0, 0, 0));
+        btnManageParty.setText("Manage Partylist Information");
+        btnManageParty.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnManageParty.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegisPartyActionPerformed(evt);
+                btnManagePartyActionPerformed(evt);
+            }
+        });
+
+        btnManagePosition.setBackground(new java.awt.Color(250, 192, 45));
+        btnManagePosition.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        btnManagePosition.setForeground(new java.awt.Color(0, 0, 0));
+        btnManagePosition.setText("Manage Position Information");
+        btnManagePosition.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnManagePosition.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnManagePositionActionPerformed(evt);
             }
         });
 
@@ -131,7 +168,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -139,15 +176,14 @@ public class AdminDashboard extends javax.swing.JFrame {
                                 .addComponent(lblGreeting, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 722, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnRegisCandidate, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnRegisStudent, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnRegisParty, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(8, 8, 8))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnConcludeElect, javax.swing.GroupLayout.PREFERRED_SIZE, 728, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(126, 126, 126)))))
+                                .addComponent(btnManageCandidate, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnManageVoter)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnManageParty)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnManagePosition))))
+                    .addComponent(btnConcludeElect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -159,9 +195,10 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRegisCandidate, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegisStudent, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegisParty, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnManageCandidate, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnManageVoter, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnManageParty, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnManagePosition, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnConcludeElect, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(26, Short.MAX_VALUE))
@@ -187,8 +224,14 @@ public class AdminDashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConcludeElectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConcludeElectActionPerformed
-        int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to conclude the elections?", "Conclude Elections", JOptionPane.WARNING_MESSAGE);
-
+        // Traffic Cop: If it's green and says See Results, teleport and abort!
+        if (btnConcludeElect.getText().equals("See Election Results")) {
+            this.dispose();
+            new plpvotingsystem.ElectionResultsForm(this.currentAdmin).setVisible(true);
+            return;
+        }
+        
+        int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to CONCLUDE the elections?", "Conclude Elections", JOptionPane.WARNING_MESSAGE);
         if (adminChoice == JOptionPane.YES_OPTION) {
 //            this.dispose();
 //            new plpvotingsystem.ElectionResultsForm(this.currentAdmin).setVisible(true);
@@ -209,20 +252,25 @@ public class AdminDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnConcludeElectActionPerformed
 
-    private void btnRegisCandidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisCandidateActionPerformed
+    private void btnManageCandidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCandidateActionPerformed
         this.dispose();
         new plpvotingsystem.ManageCandidatesForm(this.currentAdmin).setVisible(true);
-    }//GEN-LAST:event_btnRegisCandidateActionPerformed
+    }//GEN-LAST:event_btnManageCandidateActionPerformed
 
-    private void btnRegisStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisStudentActionPerformed
+    private void btnManageVoterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageVoterActionPerformed
         this.dispose();
         new plpvotingsystem.ManageStudentsForm(this.currentAdmin).setVisible(true);
-    }//GEN-LAST:event_btnRegisStudentActionPerformed
+    }//GEN-LAST:event_btnManageVoterActionPerformed
 
-    private void btnRegisPartyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisPartyActionPerformed
+    private void btnManagePartyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManagePartyActionPerformed
         this.dispose();
         new plpvotingsystem.ManagePartylistsForm(this.currentAdmin).setVisible(true);
-    }//GEN-LAST:event_btnRegisPartyActionPerformed
+    }//GEN-LAST:event_btnManagePartyActionPerformed
+
+    private void btnManagePositionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManagePositionActionPerformed
+        this.dispose();
+        new plpvotingsystem.ManagePositionsForm(this.currentAdmin).setVisible(true);
+    }//GEN-LAST:event_btnManagePositionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -261,9 +309,10 @@ public class AdminDashboard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConcludeElect;
-    private javax.swing.JButton btnRegisCandidate;
-    private javax.swing.JButton btnRegisParty;
-    private javax.swing.JButton btnRegisStudent;
+    private javax.swing.JButton btnManageCandidate;
+    private javax.swing.JButton btnManageParty;
+    private javax.swing.JButton btnManagePosition;
+    private javax.swing.JButton btnManageVoter;
     private plpvotingsystem.GlobalHeader globalHeader2;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

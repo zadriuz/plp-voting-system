@@ -133,7 +133,7 @@ CREATE TABLE `tblpositions` (
   `max_votes` int NOT NULL,
   PRIMARY KEY (`position_id`),
   UNIQUE KEY `position_name` (`position_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,6 +142,7 @@ CREATE TABLE `tblpositions` (
 
 LOCK TABLES `tblpositions` WRITE;
 /*!40000 ALTER TABLE `tblpositions` DISABLE KEYS */;
+INSERT INTO `tblpositions` VALUES (1,'President',1),(2,'Vice President',1),(3,'Secretary',1),(4,'Treasurer',1),(5,'Auditor',1),(6,'P.R.O',1);
 /*!40000 ALTER TABLE `tblpositions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,7 +185,7 @@ CREATE TABLE `tblvotes` (
   `vote_id` int NOT NULL AUTO_INCREMENT,
   `candidate_id` int DEFAULT NULL,
   PRIMARY KEY (`vote_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +194,7 @@ CREATE TABLE `tblvotes` (
 
 LOCK TABLES `tblvotes` WRITE;
 /*!40000 ALTER TABLE `tblvotes` DISABLE KEYS */;
-INSERT INTO `tblvotes` VALUES (1,1),(3,3),(4,2),(5,6),(6,2),(7,6),(8,2),(9,5),(10,1),(11,5),(12,9),(13,2),(14,5),(15,11),(16,2),(17,6),(18,9),(19,2),(20,6),(21,9),(22,2),(23,6),(24,9),(25,2),(26,5),(27,10),(28,2),(29,5),(30,10),(31,2),(32,4),(33,10),(34,2),(35,4),(36,11),(37,2),(38,4),(39,11),(40,2),(41,4),(42,11),(43,3),(44,5),(45,11),(46,3),(47,5),(48,11),(49,3),(50,5),(51,11),(52,2),(53,4),(54,10),(55,12),(56,17),(57,19),(58,1),(59,4),(60,10),(61,14),(62,15),(63,20),(64,3),(65,5),(66,10),(67,13),(68,16),(69,20),(70,2),(71,6),(72,11),(73,14),(74,15),(75,19),(76,3),(77,6),(78,10),(79,12),(80,16),(81,18),(82,1),(83,4),(84,11),(85,13),(86,16),(87,18);
+INSERT INTO `tblvotes` VALUES (1,1),(3,3),(4,2),(5,6),(6,2),(7,6),(8,2),(9,5),(10,1),(11,5),(12,9),(13,2),(14,5),(15,11),(16,2),(17,6),(18,9),(19,2),(20,6),(21,9),(22,2),(23,6),(24,9),(25,2),(26,5),(27,10),(28,2),(29,5),(30,10),(31,2),(32,4),(33,10),(34,2),(35,4),(36,11),(37,2),(38,4),(39,11),(40,2),(41,4),(42,11),(43,3),(44,5),(45,11),(46,3),(47,5),(48,11),(49,3),(50,5),(51,11),(52,2),(53,4),(54,10),(55,12),(56,17),(57,19),(58,1),(59,4),(60,10),(61,14),(62,15),(63,20),(64,3),(65,5),(66,10),(67,13),(68,16),(69,20),(70,2),(71,6),(72,11),(73,14),(74,15),(75,19),(76,3),(77,6),(78,10),(79,12),(80,16),(81,18),(82,1),(83,4),(84,11),(85,13),(86,16),(87,18),(88,1),(89,5),(90,9),(91,13),(92,15),(93,25);
 /*!40000 ALTER TABLE `tblvotes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -206,4 +207,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-06 18:54:06
+-- Dump completed on 2026-04-07 15:29:36

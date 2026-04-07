@@ -263,6 +263,7 @@ public class StudentDashboard extends javax.swing.JFrame {
                 }
 
                 JLabel lblIcon = new JLabel(partyIcon);
+                
 
                 plpvotingsystem.RoundedPanel partyCard = new plpvotingsystem.RoundedPanel();
                 JPanel contentWrapper = new JPanel();

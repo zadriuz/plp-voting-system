@@ -23,30 +23,29 @@ public class ElectionResultsForm extends javax.swing.JFrame {
 
     public ElectionResultsForm(String adminName) {
         initComponents();
-        
+
         this.getContentPane().setLayout(new java.awt.BorderLayout());
-        
+
         plpvotingsystem.GlobalHeader header = new plpvotingsystem.GlobalHeader();
         header.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 100, 20, 100));
         header.setPreferredSize(new java.awt.Dimension(1000, 110));
         this.getContentPane().add(header, java.awt.BorderLayout.NORTH);
-        
+
         this.setLocationRelativeTo(null);
         java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
         this.setIconImage(plpIcon);
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
 
         this.getContentPane().setBackground(new java.awt.Color(245, 245, 245));
-        
-        pnlGraphs.setLayout(new java.awt.GridLayout(1, 2, 50, 0));
+
+        pnlGraphs.setLayout(new java.awt.GridLayout(0, 2, 50, 0));
 
         pnlMainContent.setBackground(new java.awt.Color(245, 245, 245));
         pnlGraphs.setBackground(new java.awt.Color(245, 245, 245));
 
-        pnlWinners.setLayout(new java.awt.GridLayout(2, 3, 50, 30));
+        pnlWinners.setLayout(new java.awt.GridLayout(0, 3, 50, 30));
         pnlWinners.setBackground(new java.awt.Color(245, 245, 245));
-        pnlWinners.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 40, 0));
-        
+        pnlWinners.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 20, 0));
 
         // --- THE MASTER WRAPPER ---
         // 1. Yank the main content out of the frame
@@ -105,232 +104,193 @@ public class ElectionResultsForm extends javax.swing.JFrame {
     }
 
     private void loadLiveResults() {
-        try (
-                Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("SELECT c.full_name, c.party_list, COUNT(v.candidate_id) AS total_votes, c.position_id, t.pos_total FROM tblCandidates c LEFT JOIN tblVotes v ON c.candidate_id = v.candidate_id JOIN (SELECT c2.position_id, COUNT(v2.candidate_id) as pos_total FROM tblCandidates c2 LEFT JOIN tblVotes v2 ON c2.candidate_id = v2.candidate_id GROUP BY c2.position_id) t ON c.position_id = t.position_id GROUP BY c.candidate_id, c.full_name, c.party_list, c.position_id, t.pos_total ORDER BY c.position_id ASC, total_votes DESC")) {
-            ResultSet rs = pst.executeQuery();
+        pnlGraphs.removeAll();
+        // Use the infinite row trick for the graphs! 2 columns, infinite rows.
+        pnlGraphs.setLayout(new java.awt.GridLayout(0, 2, 50, 30));
 
-            int currentCategory = 0;
-            JPanel leftCol = new JPanel();
-            JPanel rightCol = new JPanel();
-            leftCol.setLayout(new javax.swing.BoxLayout(leftCol, javax.swing.BoxLayout.Y_AXIS));
-            rightCol.setLayout(new javax.swing.BoxLayout(rightCol, javax.swing.BoxLayout.Y_AXIS));
+        try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pstPositions = conn.prepareStatement("SELECT position_id, position_name FROM tblPositions ORDER BY position_id ASC")) {
 
-            leftCol.setBackground(new java.awt.Color(245, 245, 245));
-            rightCol.setBackground(new java.awt.Color(245, 245, 245));
+            ResultSet rsPositions = pstPositions.executeQuery();
 
-            pnlGraphs.add(leftCol);
-            pnlGraphs.add(rightCol);
+            while (rsPositions.next()) {
+                int currentPosId = rsPositions.getInt("position_id");
+                String posName = rsPositions.getString("position_name");
 
-            while (rs.next()) {
-                String fullName = rs.getString("full_name");
-                String partyList = rs.getString("party_list"); // 1. Grab the party
-                int totalVotes = rs.getInt("total_votes");
-                int positionID = rs.getInt("position_id");
-                int positionTotal = rs.getInt("pos_total");
+                // --- 1. CREATE A MINI-PANEL FOR THIS SPECIFIC POSITION ---
+                JPanel categoryPanel = new JPanel();
+                categoryPanel.setLayout(new javax.swing.BoxLayout(categoryPanel, javax.swing.BoxLayout.Y_AXIS));
+                categoryPanel.setBackground(new java.awt.Color(245, 245, 245));
 
-                if (positionID != currentCategory) {
-                    String positionTitle = "";
-                    switch (positionID) {
-                        case 1:
-                            positionTitle = "President";
-                            break;
-                        case 2:
-                            positionTitle = "Vice President";
-                            break;
-                        case 3:
-                            positionTitle = "Secretary";
-                            break;
-                        case 4:
-                            positionTitle = "Treasurer";
-                            break;
-                        case 5:
-                            positionTitle = "Auditor";
-                            break;
-                        case 6:
-                            positionTitle = "P.R.O";
-                            break;
-                        default:
-                            break;
+                // Add the Position Title to the top of the mini-panel
+                JLabel positionLabel = new JLabel(posName);
+                positionLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
+                positionLabel.setForeground(new java.awt.Color(55, 140, 59)); // PLP Green
+                categoryPanel.add(positionLabel);
+                categoryPanel.add(javax.swing.Box.createVerticalStrut(10));
+
+                // --- 2. FETCH CANDIDATES & VOTES FOR THIS POSITION ---
+                // This query is massive but it calculates total votes AND the total votes cast for the position in one go!
+                String candidateQuery = "SELECT c.full_name, c.party_list, COUNT(v.candidate_id) AS total_votes, "
+                        + "(SELECT COUNT(*) FROM tblVotes v2 JOIN tblCandidates c2 ON v2.candidate_id = c2.candidate_id WHERE c2.position_id = ?) as pos_total "
+                        + "FROM tblCandidates c LEFT JOIN tblVotes v ON c.candidate_id = v.candidate_id "
+                        + "WHERE c.position_id = ? "
+                        + "GROUP BY c.candidate_id, c.full_name, c.party_list "
+                        + "ORDER BY total_votes DESC";
+
+                try (PreparedStatement pstCandidates = conn.prepareStatement(candidateQuery)) {
+
+                    pstCandidates.setInt(1, currentPosId);
+                    pstCandidates.setInt(2, currentPosId);
+                    ResultSet rsCandidates = pstCandidates.executeQuery();
+
+                    boolean hasCandidates = false;
+
+                    // --- 3. BUILD THE PROGRESS BARS ---
+                    while (rsCandidates.next()) {
+                        hasCandidates = true;
+                        String fullName = rsCandidates.getString("full_name");
+                        String partyList = rsCandidates.getString("party_list");
+                        int totalVotes = rsCandidates.getInt("total_votes");
+                        int positionTotal = rsCandidates.getInt("pos_total");
+
+                        String displayString = fullName.equals("Abstain")
+                                ? fullName + " - " + totalVotes + " votes"
+                                : fullName + " (" + partyList + ") - " + totalVotes + " votes";
+
+                        JLabel candidateVotes = new JLabel(displayString);
+                        candidateVotes.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 25));
+
+                        JProgressBar voteBar = new JProgressBar();
+                        voteBar.setMaximum(positionTotal == 0 ? 1 : positionTotal); // Prevent divide by zero error
+                        voteBar.setValue(totalVotes);
+                        voteBar.setStringPainted(true);
+                        voteBar.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
+                        voteBar.setForeground(new java.awt.Color(250, 192, 45)); // PLP Yellow
+                        voteBar.setUI(new javax.swing.plaf.basic.BasicProgressBarUI());
+                        voteBar.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 25));
+
+                        // Snap the bar into the category panel
+                        categoryPanel.add(candidateVotes);
+                        categoryPanel.add(javax.swing.Box.createVerticalStrut(2));
+                        categoryPanel.add(voteBar);
+                        categoryPanel.add(javax.swing.Box.createVerticalStrut(8));
                     }
 
-                    JLabel positionLabel = new JLabel(positionTitle);
-                    positionLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
-
-                    if (positionID <= 3) {
-                        if (positionID != 1) { // Prevents gap at the very top of the Left column
-                            leftCol.add(javax.swing.Box.createVerticalStrut(15));
-                        }
-                        leftCol.add(positionLabel);
-                    } else {
-                        if (positionID != 4) { // Prevents gap at the very top of the Right column
-                            rightCol.add(javax.swing.Box.createVerticalStrut(25));
-                        }
-                        rightCol.add(positionLabel);
+                    // If nobody is running, show a ghost town message
+                    if (!hasCandidates) {
+                        JLabel lblNoCandidates = new JLabel("No candidates registered.");
+                        lblNoCandidates.setFont(new java.awt.Font("Segoe UI", java.awt.Font.ITALIC, 12));
+                        lblNoCandidates.setForeground(java.awt.Color.GRAY);
+                        categoryPanel.add(lblNoCandidates);
                     }
-
-                    currentCategory = positionID;
                 }
-
-                String displayString = "";
-
-                if (fullName.equals("Abstain")) {
-                    displayString = fullName + " - " + totalVotes + " votes";
-                } else {
-                    displayString = fullName + " (" + partyList + ") - " + totalVotes + " votes";
-                }
-
-                JLabel candidateVotes = new JLabel(displayString);
-                candidateVotes.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 25));
-
-                javax.swing.UIManager.put("ProgressBar.selectionBackground", java.awt.Color.BLACK);
-                javax.swing.UIManager.put("ProgressBar.selectionForeground", java.awt.Color.BLACK);
-
-                JProgressBar voteBar = new JProgressBar();
-
-                if (positionTotal == 0) {
-                    voteBar.setMaximum(1);
-                } else {
-                    voteBar.setMaximum(positionTotal);
-                }
-
-                voteBar.setValue(totalVotes);
-                voteBar.setStringPainted(true);
-                voteBar.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
-                voteBar.setForeground(new java.awt.Color(250, 192, 45));
-                voteBar.setUI(new javax.swing.plaf.basic.BasicProgressBarUI());
-                voteBar.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 25));
-
-                if (positionID <= 3) {
-                    leftCol.add(candidateVotes);
-                    leftCol.add(javax.swing.Box.createVerticalStrut(2));
-                    leftCol.add(voteBar);
-                    leftCol.add(javax.swing.Box.createVerticalStrut(8));
-                } else {
-                    rightCol.add(candidateVotes);
-                    rightCol.add(javax.swing.Box.createVerticalStrut(2));
-                    rightCol.add(voteBar);
-                    rightCol.add(javax.swing.Box.createVerticalStrut(8));
-                }
+                // --- 4. SNAP THE FINISHED CATEGORY PANEL INTO THE MAIN GRAPH GRID ---
+                pnlGraphs.add(categoryPanel);
             }
-            pnlGraphs.repaint();
-            pnlGraphs.revalidate();
         } catch (java.sql.SQLException e) {
             JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
         }
 
-        pnlWinners.repaint();
-        pnlWinners.revalidate();
+        // Refresh UI
+        pnlGraphs.repaint();
+        pnlGraphs.revalidate();
     }
 
     private void generateWinnersSummary() {
-        for (int i = 1; i <= 6; i++) {
-            try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("SELECT c.full_name, c.party_list, COUNT(v.candidate_id) as vote_count FROM tblCandidates c LEFT JOIN tblVotes v ON c.candidate_id = v.candidate_id WHERE c.position_id = ? AND c.full_name != 'Abstain' GROUP BY c.candidate_id, c.full_name, c.party_list ORDER BY vote_count DESC LIMIT 1")) {
-                pst.setInt(1, i);
+        // 1. Clear the panel just in case this is called during a refresh
+        pnlWinners.removeAll();
 
-                ResultSet rs = pst.executeQuery();
-                if (rs.next()) {
-                    String fullName = rs.getString("full_name");
-                    String partyList = rs.getString("party_list");
-                    int voteCount = rs.getInt("vote_count");
+        // 2. Open ONE main connection to the database
+        try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pstPositions = conn.prepareStatement("SELECT position_id, position_name FROM tblPositions ORDER BY position_id ASC")) {
 
-                    String positionTitle = "";
-                    if (i == 1) {
-                        positionTitle = "President";
-                    } else if (i == 2) {
-                        positionTitle = "Vice President";
-                    } else if (i == 3) {
-                        positionTitle = "Secretary";
-                    } else if (i == 4) {
-                        positionTitle = "Treasurer";
-                    } else if (i == 5) {
-                        positionTitle = "Auditor";
-                    } else if (i == 6) {
-                        positionTitle = "P.R.O";
+            ResultSet rsPositions = pstPositions.executeQuery();
+
+            // 3. Loop through however many positions actually exist in the database
+            while (rsPositions.next()) {
+                int dynamicPosId = rsPositions.getInt("position_id");
+                String positionTitle = rsPositions.getString("position_name");
+
+                // 4. Run the Winner query for THIS specific dynamic position
+                try (PreparedStatement pstWinner = conn.prepareStatement("SELECT c.full_name, c.party_list, COUNT(v.candidate_id) as vote_count FROM tblCandidates c LEFT JOIN tblVotes v ON c.candidate_id = v.candidate_id WHERE c.position_id = ? AND c.full_name != 'Abstain' GROUP BY c.candidate_id, c.full_name, c.party_list ORDER BY vote_count DESC LIMIT 1")) {
+
+                    pstWinner.setInt(1, dynamicPosId);
+                    ResultSet rsWinner = pstWinner.executeQuery();
+
+                    if (rsWinner.next()) {
+                        // --- WE HAVE A WINNER: Build the Standard Card ---
+                        String fullName = rsWinner.getString("full_name");
+                        String partyList = rsWinner.getString("party_list");
+                        int voteCount = rsWinner.getInt("vote_count");
+
+                        plpvotingsystem.RoundedPanel partyCard = new plpvotingsystem.RoundedPanel();
+                        partyCard.setLayout(new javax.swing.BoxLayout(partyCard, javax.swing.BoxLayout.Y_AXIS));
+                        partyCard.setBackground(java.awt.Color.WHITE);
+
+                        JPanel contentWrapper = new JPanel();
+                        contentWrapper.setLayout(new javax.swing.BoxLayout(contentWrapper, javax.swing.BoxLayout.Y_AXIS));
+                        contentWrapper.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+                        contentWrapper.setOpaque(false);
+
+                        JLabel lblPosition = new JLabel(positionTitle);
+                        lblPosition.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+                        lblPosition.setForeground(new java.awt.Color(55, 140, 59)); // PLP Green
+
+                        JLabel lblWinnerName = new JLabel(fullName);
+                        lblWinnerName.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 20));
+
+                        JLabel lblParty = new JLabel(partyList);
+                        lblParty.setFont(new java.awt.Font("Segoe UI", java.awt.Font.ITALIC, 14));
+                        lblParty.setForeground(java.awt.Color.GRAY);
+
+                        JLabel lblVotes = new JLabel("Total Votes: " + voteCount);
+                        lblVotes.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
+
+                        contentWrapper.add(lblPosition);
+                        contentWrapper.add(javax.swing.Box.createVerticalStrut(10));
+                        contentWrapper.add(lblWinnerName);
+                        contentWrapper.add(lblParty);
+                        contentWrapper.add(javax.swing.Box.createVerticalStrut(15));
+                        contentWrapper.add(lblVotes);
+
+                        partyCard.add(contentWrapper);
+                        pnlWinners.add(partyCard);
+
+                    } else {
+                        // --- GHOST TOWN: Nobody ran for this position ---
+                        plpvotingsystem.RoundedPanel emptyCard = new plpvotingsystem.RoundedPanel();
+                        emptyCard.setLayout(new javax.swing.BoxLayout(emptyCard, javax.swing.BoxLayout.Y_AXIS));
+                        emptyCard.setBackground(new java.awt.Color(220, 220, 220)); // Gray background
+
+                        JPanel emptyWrapper = new JPanel();
+                        emptyWrapper.setLayout(new javax.swing.BoxLayout(emptyWrapper, javax.swing.BoxLayout.Y_AXIS));
+                        emptyWrapper.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+                        emptyWrapper.setOpaque(false);
+
+                        JLabel lblPos = new JLabel(positionTitle);
+                        lblPos.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+                        lblPos.setForeground(java.awt.Color.DARK_GRAY);
+
+                        JLabel lblVacant = new JLabel("VACANT");
+                        lblVacant.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 20));
+                        lblVacant.setForeground(java.awt.Color.GRAY);
+
+                        emptyWrapper.add(lblPos);
+                        emptyWrapper.add(javax.swing.Box.createVerticalStrut(10));
+                        emptyWrapper.add(lblVacant);
+
+                        emptyCard.add(emptyWrapper);
+                        pnlWinners.add(emptyCard);
                     }
-
-                    // --- START CARD CONSTRUCTION ---
-                    plpvotingsystem.RoundedPanel partyCard = new plpvotingsystem.RoundedPanel();
-                    partyCard.setLayout(new javax.swing.BoxLayout(partyCard, javax.swing.BoxLayout.Y_AXIS));
-                    partyCard.setBackground(java.awt.Color.WHITE);
-
-                    JPanel contentWrapper = new JPanel();
-                    contentWrapper.setLayout(new javax.swing.BoxLayout(contentWrapper, javax.swing.BoxLayout.Y_AXIS));
-                    contentWrapper.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
-                    contentWrapper.setOpaque(false);
-
-                    JLabel lblPosition = new JLabel(positionTitle);
-                    lblPosition.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
-                    lblPosition.setForeground(new java.awt.Color(55, 140, 59)); // PLP Green
-
-                    JLabel lblWinnerName = new JLabel(fullName);
-                    lblWinnerName.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 20));
-
-                    JLabel lblParty = new JLabel(partyList);
-                    lblParty.setFont(new java.awt.Font("Segoe UI", java.awt.Font.ITALIC, 14));
-                    lblParty.setForeground(java.awt.Color.GRAY);
-
-                    JLabel lblVotes = new JLabel("Total Votes: " + voteCount);
-                    lblVotes.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-
-                    // Snap the labels into the wrapper
-                    contentWrapper.add(lblPosition);
-                    contentWrapper.add(javax.swing.Box.createVerticalStrut(10));
-                    contentWrapper.add(lblWinnerName);
-                    contentWrapper.add(lblParty);
-                    contentWrapper.add(javax.swing.Box.createVerticalStrut(15));
-                    contentWrapper.add(lblVotes);
-
-                    // Snap the wrapper into the card, and the card into the grid
-                    partyCard.add(contentWrapper);
-                    pnlWinners.add(partyCard);
-                    // --- END CARD CONSTRUCTION ---
-                } else {
-                    // No candidate was found for this position (Ghost Town!)
-                    String positionTitle = "";
-                    if (i == 1) {
-                        positionTitle = "President";
-                    } else if (i == 2) {
-                        positionTitle = "Vice President";
-                    } else if (i == 3) {
-                        positionTitle = "Secretary";
-                    } else if (i == 4) {
-                        positionTitle = "Treasurer";
-                    } else if (i == 5) {
-                        positionTitle = "Auditor";
-                    } else if (i == 6) {
-                        positionTitle = "P.R.O";
-                    }
-
-                    plpvotingsystem.RoundedPanel emptyCard = new plpvotingsystem.RoundedPanel();
-                    emptyCard.setLayout(new javax.swing.BoxLayout(emptyCard, javax.swing.BoxLayout.Y_AXIS));
-                    emptyCard.setBackground(new java.awt.Color(220, 220, 220)); // Gray background
-
-                    JPanel emptyWrapper = new JPanel();
-                    emptyWrapper.setLayout(new javax.swing.BoxLayout(emptyWrapper, javax.swing.BoxLayout.Y_AXIS));
-                    emptyWrapper.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
-                    emptyWrapper.setOpaque(false);
-
-                    JLabel lblPos = new JLabel(positionTitle);
-                    lblPos.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
-                    lblPos.setForeground(java.awt.Color.DARK_GRAY);
-
-                    JLabel lblVacant = new JLabel("VACANT");
-                    lblVacant.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 20));
-                    lblVacant.setForeground(java.awt.Color.GRAY);
-
-                    emptyWrapper.add(lblPos);
-                    emptyWrapper.add(javax.swing.Box.createVerticalStrut(10));
-                    emptyWrapper.add(lblVacant);
-
-                    emptyCard.add(emptyWrapper);
-                    pnlWinners.add(emptyCard);
                 }
-            } catch (java.sql.SQLException e) {
-                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
-                return;
             }
+
+        } catch (java.sql.SQLException e) {
+            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
         }
 
+        // 5. Tell Java to repaint the UI with the dynamically generated cards
+        pnlWinners.repaint();
+        pnlWinners.revalidate();
     }
 
     @SuppressWarnings("unchecked")
@@ -343,6 +303,7 @@ public class ElectionResultsForm extends javax.swing.JFrame {
         btnBack2Dashboard = new plpvotingsystem.RoundedButton();
         jLabel2 = new javax.swing.JLabel();
         pnlWinners = new javax.swing.JPanel();
+        btnReopen = new plpvotingsystem.RoundedButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Election Results");
@@ -392,29 +353,38 @@ public class ElectionResultsForm extends javax.swing.JFrame {
         );
         pnlWinnersLayout.setVerticalGroup(
             pnlWinnersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 389, Short.MAX_VALUE)
+            .addGap(0, 327, Short.MAX_VALUE)
         );
+
+        btnReopen.setBackground(new java.awt.Color(0, 255, 102));
+        btnReopen.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnReopen.setForeground(new java.awt.Color(0, 0, 0));
+        btnReopen.setText("Reopen Elections");
+        btnReopen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReopen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReopenActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlMainContentLayout = new javax.swing.GroupLayout(pnlMainContent);
         pnlMainContent.setLayout(pnlMainContentLayout);
         pnlMainContentLayout.setHorizontalGroup(
             pnlMainContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 847, Short.MAX_VALUE)
             .addGroup(pnlMainContentLayout.createSequentialGroup()
                 .addGroup(pnlMainContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainContentLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(pnlGraphs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainContentLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnBack2Dashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlMainContentLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(pnlMainContentLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(pnlWinners, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(pnlMainContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnReopen, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pnlGraphs, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pnlWinners, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 847, Short.MAX_VALUE)
         );
         pnlMainContentLayout.setVerticalGroup(
             pnlMainContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -429,6 +399,8 @@ public class ElectionResultsForm extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlWinners, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(15, 15, 15)
+                .addComponent(btnReopen)
                 .addContainerGap())
         );
 
@@ -456,6 +428,25 @@ public class ElectionResultsForm extends javax.swing.JFrame {
         this.dispose();
         new plpvotingsystem.AdminDashboard(this.currentAdmin).setVisible(true);
     }//GEN-LAST:event_btnBack2DashboardActionPerformed
+
+    private void btnReopenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReopenActionPerformed
+        int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to REOPEN the elections? Students will be able to log in and vote again.", "Reopen Elections", JOptionPane.WARNING_MESSAGE);
+
+        if (adminChoice == JOptionPane.YES_OPTION) {
+            try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("UPDATE tblElectionStatus SET current_phase = 'OPEN' WHERE status_id = 1")) {
+
+                pst.executeUpdate();
+                JOptionPane.showMessageDialog(this, "The election is now OPEN.");
+
+                // Teleport back to the dashboard so it refreshes the buttons
+                this.dispose();
+                new plpvotingsystem.AdminDashboard(this.currentAdmin).setVisible(true);
+
+            } catch (java.sql.SQLException e) {
+                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnReopenActionPerformed
 
     /**
      * @param args the command line arguments
@@ -494,6 +485,7 @@ public class ElectionResultsForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack2Dashboard;
+    private javax.swing.JButton btnReopen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel pnlGraphs;

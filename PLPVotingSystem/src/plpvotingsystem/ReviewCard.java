@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package plpvotingsystem;
 
 import java.awt.Color;
@@ -10,7 +6,7 @@ import javax.swing.JPanel;
 
 public class ReviewCard extends plpvotingsystem.RoundedPanel {
 
-    public ReviewCard(String position, String name, String party) {
+    public ReviewCard(String position, String name, String party, String imagePath) {
         this.setLayout(new java.awt.BorderLayout());
         this.setBackground(java.awt.Color.WHITE);
         this.setOpaque(false);
@@ -20,7 +16,13 @@ public class ReviewCard extends plpvotingsystem.RoundedPanel {
         imgCandidate.setPreferredSize(new java.awt.Dimension(50, 50));
         imgCandidate.setMinimumSize(new java.awt.Dimension(50, 50));
         imgCandidate.setMaximumSize(new java.awt.Dimension(50, 50));
-        imgCandidate.setImage(new javax.swing.ImageIcon("SystemIcons\\independentIcon.png"));
+        
+        // KILLS THE BLEEDING SCROLL ARTIFACT:
+        imgCandidate.setOpaque(false); 
+        
+        // Fetches and scales the dynamic image securely
+        javax.swing.ImageIcon sharpIcon = plpvotingsystem.ImageUtil.getSharpIcon(imagePath, 50, 50);
+        imgCandidate.setImage(sharpIcon);
 
         JPanel pnlContainer = new JPanel(new java.awt.FlowLayout());
         pnlContainer.add(imgCandidate);
