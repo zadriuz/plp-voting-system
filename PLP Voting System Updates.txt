@@ -1,0 +1,67 @@
+PLP Voting System Improvements
+- Better the image quality [STOPPED]
+- Have an enrollment for candidates [DONE]
+- Hovering over controls should have some effects [DONE]
+- Pressing enter should trigger the login button [DONE]
+- Suggest about the size of the candidate cards [DONE]
+- Prevent the admin from creating accounts with student # that already exists [DONE]
+- Set size of back to dashboard a little bigger [DONE]
+- Adjust Global Header to be a little shorter [DONE]
+- Adjust left and right padding - just adjust the border property [DONE]
+- Accidentally deleted pnlMainContent's border, what was the insets again for it? [DONE]
+
+- In Voting Form, when it's already at 6th page, set text of btnNext to Review Votes [DONE]
+- In Voting Form, set the position label to "Vote for " + position then add a subtext beneath with a dark gray color saying "Select one candidate" before the choices. If possible let's put them altogether into a one box similar to the Figma design [DONE]
+- Check mark is only box, suggestion - replace it with checkmark icon instead [DONE]
+
+- Add a form to enroll candidates, if possible, with their images, this should require advance db knowledge, maybe [DONE]
+
+- Fix blurry images [STOPPED]
+
+- Add QR scan for ID [NOT YET]
+
+- Create form for displaying results [TO BE DEVELOPED]
+
+- Set icon at the title bar of login form to plp's icon and the icon of the application to plp [DONE]
+
+- Update database from MySQL Workbench and bring into database folder [DONE]
+
+- Make it so a certain credentials can be used to access the admin dashboard and adding candidates (you can only modify their credentials like change their user and password via db so it's basically protected) [DONE]
+
+- Make sure images/icons are accessible by other users by fixing their directories (right now, they are based off of my directory) [DONE]
+
+- Link candidate images [DONE]
+
+- Truncate all candidates from tblCandidates then enroll candidates one-by-one using the admin (for now we'll keep hardcoded data)
+
+- Create form for displaying results using the bar graph and write a summary of results [TO BE CONTINUED]
+
+- Create mini admin dashboard that has buttons to teleport you to:
+	> AddCandidateForm (Button saying Register a candidate)
+	> AdminGeneratorForm (Button saying Register a student)
+	> ElectionResultsForm (Button saying "Conclude elections") [TO BE DONE]
+
+- See this PartyCandidatesForm.java and how you utilized the custom scroll bar you made! Make it so scroll bar is only visible when necessary (like elements are getting cut off) I've observed earlier when independent candidates only have one candidate, there is no scroll bar but now that I have added two, a scroll bar became evident. I want it to be applied to student dashboard as well as the voting form [DONE]
+- Add padding to newly developed forms [DONE]
+- Turn the buttons of the newly developed forms into rounded buttons [DONE]
+
+- Voting status. Add a condition in the login form where you cannot log in AS A STUDENT IF: election is over [TO BE CONTINUED]
+
+- Make it so candidates in the progress bar shows what partylist they belong to or if they are independent (e.g. Candidate A (Independent)) [DONE]
+- Make it so Abstain is always at the bottom of the choices [DONE]
+
+Question:
+- How will you enroll party lists
+
+NEXT:
+Program the Conclude Elections
+- Load the progress bar in the results [DONE]
+- Show a table of the total votes accumulated for each position including the Abstain count 
+- Create a section for the election winners [DONE]
+- Show the image of the winner with their image as the largest information and model them like a tree wherein the president and vice president is side to side and below them are the secretary, treasurer, auditor and p.r.o.
+- Set status of election to ensure no students can login. exception: admins can login anytime regardless of whether the election is still going on or not [DONE]
+- Add a form to add/edit/delete positions [DONE]
+
+- Back to fixing the bleed in review page. I recall we had this problem before in the voting form, analyze the voting form and maybe you'll find out the solution [DONE]
+- Make it so when elections are ongoing, manage positions button is disabled, that a good idea? [DONE]
+- When selecting a candidate, there's some large space just after the party list name. [DONE]

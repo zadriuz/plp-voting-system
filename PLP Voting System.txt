@@ -1,0 +1,25 @@
+1. Login Page (UI Implementation Pending but Backend Done)
+• Student Number
+• Passcode
+• Login Button
+
+2. Candidates page
+• credentials
+• position 
+• plataporma
+
+3. Voting Page
+• List of Candidates
+• Candidate Name
+• Position
+• Vote Button (menu bar)
+
+4.Confirmation Page
+“Are you sure you want to vote?”
+• Yes Button
+• Cancel Button
+
+5. Vote Submitted Page
+“Vote submitted successfully”
+
+6.Logout / Exit Button

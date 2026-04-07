@@ -341,12 +341,12 @@ public class LoginForm extends javax.swing.JFrame {
                 ResultSet rs = pst1.executeQuery();
 
                 if (rs.next()) {
-                    String currentPhase = rs.getString("current_phase");
+                    String currentPhase = rs.getString("current_phase").trim();
 
-                    if (currentPhase.equals("CLOSED")) {
+                    if (currentPhase.equalsIgnoreCase("CLOSED")) {
                         JOptionPane.showMessageDialog(this, "The election has officially concluded. Voting is now closed.");
                         return;
-                    } else if (currentPhase.equals("SETUP")){
+                    } else if (currentPhase.equalsIgnoreCase("SETUP")){
                         JOptionPane.showMessageDialog(this, "System under maintenance. Please try again later!");
                         return;
                     } else {

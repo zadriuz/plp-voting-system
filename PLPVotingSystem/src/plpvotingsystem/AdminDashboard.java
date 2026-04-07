@@ -20,7 +20,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             ResultSet rs = pst.executeQuery();
             
             if(rs.next()){
-                String electionStatus = rs.getString("current_phase");
+                String electionStatus = rs.getString("current_phase").trim();
                 
                 if(electionStatus.equalsIgnoreCase("OPEN")){
                     btnManageCandidate.setEnabled(false);
@@ -62,7 +62,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             if (rs.next()) {
                 String currentPhase = rs.getString("current_phase");
 
-                if (currentPhase.equals("CLOSED")) {
+                if (currentPhase.equalsIgnoreCase("CLOSED")) {
                     btnConcludeElect.setText("See Election Results");
                     btnConcludeElect.setBackground(new java.awt.Color(55, 140, 59)); // PLP Green
                     btnConcludeElect.setForeground(java.awt.Color.BLACK);

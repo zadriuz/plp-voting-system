@@ -1,0 +1,74 @@
+PLP Voting System Roadmap
+ 
+1. Create the database and tables needed.
+2. Create Java Ant project
+3. Download .jar file that serves as the JDBC and add it to the Libraries.
+4. Create Java Class named DBConnection
+	4.1. Import necessary packages from java.sql (Connection - for SQL commands; DriverManager - as bridge)
+	4.2. Create a static method that returns a Connection object named dbConnect()
+		4.2.1. Declare String variables for the URL (jdbc:mysql://localhost:3306/plpvotingdb), user (root as default), password (mysql password)
+		4.2.2. Perform a try-catch and establish the connection. Return DriverManager.getConnection(URL, user, password) else Return null if Exception e catched
+5. Create JFrame Form named LoginForm
+	5.1. Add the necessary Controls (JTextField, JPasswordField, JButton)
+	5.2. Program the Login Button
+		5.2.1. Import necessary packages (javax.swing.JOptionPane - for popup messages; java.sql.Connection - for sql cmds);
+		5.2.2. Take inputs from the Controls using getText() and getPassword() -> NOTE for getPassword(): assign it to an object String because getPassword() returns an array of char
+			5.2.2.1. Check if the fields are empty by removing whitespace [.trim()] and [.isEmpty()], if yes, show a popup message and quickly return to go back to login form and prompt user to press login again.
+		5.2.3. Assign Connection object from database.DBConnection.dbConnect() [package.class.method]
+		5.2.3. Test Connection if not null then print ready for query, else show a popup message showing error then return
+	5.3. Import java.sql.PreparedStatement
+		5.3.1. Inside a try-catch, create a String query that reads all from tblVoters where it checks if student number = ? and BINARY passcode = ? (? acts as placeholder; BINARY makes sure passCode is case-sensitive). Catch java.sql.SQLException e and show a popup message if error occurs.
+		5.3.2. Call prepareStatement on your DBConnection that passes the argument (query) and assign it to a PreparedStatement object
+		5.3.3. Modify the placeholders from query using setString() on the PreparedStatement with arguments (position # of placeholder, value/variable)
+	5.4. Import java.sql.ResultSet
+		5.4.1. After replacing query placeholders, assign the value that will be returned by PreparedStatement's executeQuery() into a ResultSet object
+		5.4.2.DEBUG. We'll now proceed to READ the returned data by MySQL. Using the .next() method of ResultSet which returns true/false, create an if-else statement and show a popup dialog depending on if it successfully logs you in or not. (IF DONE - PROCEED)
+
+LESSON BREAK:
+• java.sql.Connection - active line between MySQL and Java
+• java.sql.DriverManager - the telephone operator that locates the DB using the given credentials
+• javax.swing.JOptionPane - for popup messages
+• java.sql.PreparedStatement - for query simplification and finalization. it's also for security to avoid SQL Injection; it forces to pre-compile SQL template before inserting raw data.
+• java.sql.ResultSet - for receiving the table thrown by MySQL using executeQuery()
+• java.sql.SQLException e - exception thrown by SQL in case of errors
+
+• return - forces the program to instantly exit the current method it is running, it will end the method asap.
+• BINARY - gets EXACT BYTE VALUES of text rather than letters to ENSURE CASE-SENSITIVITY
+
+6. Create new JFrame Form named VotingDashboard under plpvotingsystem package
+	6.1. INSIDE LoginForm, declare an integer that will check whether user has voted. Do this by reading has_voted column in tblVoters using ResultSet's getInt() method
+	6.2. Using an if-else statement, if has_voted == 1, that means user has voted already, show a popup message, else dispose the login form and initialize the new form VotingDashboard by setting its visibility to true. (plpvotingsystem.VotingDashboard().setVisible(true))
+	6.3.INSIDE the VotingDashboard CLASS, create a String that will track the voter's student number (loggedInStudent)
+		6.3.1. Inside the VotingDashboard CONSTRUCTOR, add a parameter that will accept the voter's student number
+			6.3.1.1. Assign the parameter to loggedInStudent
+			6.3.1.2. INSIDE LoginForm, add the studentNumber as the argument when calling VotingDashboard() because it will track the voter.
+			6.3.1.3. INSIDE VotingDashboard, add a dummy string as the argument just for avoiding the error.
+	6.4. Format the VotingDashboard Form and Program the Submit Vote Button
+		6.4.1. Create a String that will hold the selected candidate
+			6.4.1.1. Assign the String a value depending on the text of the Radio button from VotingDashboard using an if-else statement
+7. Create new JForm for reviewing votes called ReviewPage.
+		7.1. Inside the ReviewPage CLASS, declare String variables that will store the voter's student number and candidate of their choice	
+		7.2. Inside the ReviewPage CONSTRUCTOR, add parameters that will accept the voter's student number and candidate of their choice
+			7.2.1. Assign the parameters to the variables declared inside the ReviewPage CLASS
+
+LESSON BREAK:
+• executeQuery() - for SELECT statements (returns a resultSet)
+• executeUpdate() - for INSERT INTO, UPDATE, DELETE (returns # of affected rows)
+• e.getMessage() - for getting SQLException e message
+• Never reuse PreparedStatements and ResultSets
+
+		7.2.3. Program the Confirm Button
+			7.2.3.1. Establish connection (e.g. Connection conn = database.DBConnection.DBConnect())
+			7.2.3.2. Using a try-catch, CATCH the error by using e.getMessage() and TRY the following: 
+				7.2.3.2.1. In order to get chosen candidate's ID, Write a query to select the candidate ID from tblCandidates that matches their full name and the position_id (to prevent confusion in Abstain-Position) they are running for.
+				7.2.3.2.2. Prepare the statement, replace the placeholder using setString and executeQuery() into a resultSet
+				7.2.3.2.3. Move cursor down using .next() on resultSet and extract candidateID
+					7.2.3.2.3.1. Write a query that will insert/transfer the candidate_id into the tblVotes.
+					7.2.3.2.3.2. Prepare the statement, replace the placeholders using setInt() because candidate_id is an integer then executeUpdate()
+			7.2.3.3. Write a query that updates the tblVoters has_voted into true and identify them using their student_number
+				7.2.3.1. Prepare the statement with the query, replace the placeholder using setString then executeUpdate()
+			7.2.3.4. Show popup message of successful vote then close/dispose the form then show login form again
+
+
+===== | CODE BREAK | ======
+
