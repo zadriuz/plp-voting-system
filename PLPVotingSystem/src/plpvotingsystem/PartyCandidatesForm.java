@@ -15,12 +15,14 @@ import javax.swing.JPanel;
 public class PartyCandidatesForm extends javax.swing.JFrame {
 
     String currentParty, studentNo;
+    int hasVoted = 0;
 
-    public PartyCandidatesForm(String currentParty, String studentNo) {
+    public PartyCandidatesForm(String currentParty, String studentNo, int hasVoted) {
         initComponents();
         this.currentParty = currentParty;
         this.studentNo = studentNo;
-        
+        this.hasVoted = hasVoted;
+
         java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
         this.setIconImage(plpIcon);
 
@@ -60,9 +62,9 @@ public class PartyCandidatesForm extends javax.swing.JFrame {
         jScrollPane1.setBorder(null); // Removes the ugly default border
         jScrollPane1.getViewport().setBackground(new java.awt.Color(245, 245, 245));
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16); // Smooth scrolling
-        
+
         jScrollPane1.getVerticalScrollBar().setUI(new plpvotingsystem.ModernScrollBarUI());
-        
+
         pnlCandidatesList.setBackground(new java.awt.Color(245, 245, 245));
         pnlCandidatesList.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 15));
 
@@ -85,12 +87,23 @@ public class PartyCandidatesForm extends javax.swing.JFrame {
         customBtnVote.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));
         customBtnVote.setBackground(new java.awt.Color(250, 192, 45));
         customBtnVote.setForeground(java.awt.Color.BLACK);
-        customBtnVote.setIcon(new ImageIcon("SystemIcons\\voteIcon.png"));
+        
+        // Grab the icon and apply it to both states!
+        ImageIcon voteIcon = new ImageIcon("SystemIcons\\voteIcon.png");
+        customBtnVote.setIcon(voteIcon);
+        customBtnVote.setDisabledIcon(voteIcon); // <-- THE FIX
+
         customBtnVote.setIconTextGap(20);
         customBtnVote.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         customBtnVote.setPreferredSize(new java.awt.Dimension(200, 45));
         customBtnVote.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
         customBtnVote.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        
+        if (this.hasVoted == 1) {
+            customBtnVote.setEnabled(false);
+            customBtnVote.setBackground(java.awt.Color.GRAY);
+            customBtnVote.setText("Already Voted");
+        }
 
 // Wire up the click action
         customBtnVote.addActionListener(new java.awt.event.ActionListener() {
@@ -284,7 +297,7 @@ public class PartyCandidatesForm extends javax.swing.JFrame {
 
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
         this.dispose();
-        new plpvotingsystem.StudentDashboard(studentNo).setVisible(true);
+        new plpvotingsystem.StudentDashboard(studentNo, hasVoted).setVisible(true);
     }//GEN-LAST:event_btnDashboardActionPerformed
 
     private void btnVoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoteActionPerformed
@@ -322,7 +335,7 @@ public class PartyCandidatesForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PartyCandidatesForm("TestParty", "StudentNo").setVisible(true);
+                new PartyCandidatesForm("TestParty", "StudentNo", 0).setVisible(true);
             }
         });
     }

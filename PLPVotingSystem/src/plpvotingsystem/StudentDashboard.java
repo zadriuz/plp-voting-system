@@ -25,12 +25,16 @@ import javax.swing.SwingConstants;
 public class StudentDashboard extends javax.swing.JFrame {
 
     String loggedInStudent;
+    
+    int hasVoted;
 
-    public StudentDashboard(String studentNo) {
+    public StudentDashboard(String studentNo, int hasVoted) {
         initComponents();
 
         java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
         this.setIconImage(plpIcon);
+        
+        this.hasVoted = hasVoted;
 
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
 
@@ -43,11 +47,28 @@ public class StudentDashboard extends javax.swing.JFrame {
 
         lblGreeting1.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
         lblGreeting1.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        
+        // SEPARATE VOTE BUTTON BY ESTABLISHING A CONNECTION
+        
+        // Create the icon ONCE
+        javax.swing.Icon voteIcon = plpvotingsystem.ImageUtil.getSharpIcon("SystemIcons\\voteIcon.png", 24, 24);
+        btnVoteNow.setIcon(voteIcon);
+        btnVoteNow.setDisabledIcon(voteIcon); // <-- THE FIX: Tell Java to keep using the icon even when locked!
+        
+        if(hasVoted == 1){
+            btnVoteNow.setEnabled(false);
+            btnVoteNow.setBackground(java.awt.Color.GRAY); 
+            btnVoteNow.setText("Already Voted"); 
+        } else {
+            btnVoteNow.setEnabled(true);
+            btnVoteNow.setBackground(new java.awt.Color(250, 192, 45)); 
+        }
+        
         btnVoteNow.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
         btnVoteNow.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));
         btnVoteNow.setPreferredSize(new java.awt.Dimension(200, 45));
         btnVoteNow.setMaximumSize(new java.awt.Dimension(200, 45));
-        btnVoteNow.setIcon(plpvotingsystem.ImageUtil.getSharpIcon("SystemIcons\\voteIcon.png", 24, 24));
+        
         btnVoteNow.setIconTextGap(20);
 
         pnlMainContent.remove(lblGreeting);
@@ -244,7 +265,7 @@ public class StudentDashboard extends javax.swing.JFrame {
                         new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         StudentDashboard.this.dispose();
-                        new plpvotingsystem.PartyCandidatesForm(partyName, loggedInStudent).setVisible(true);
+                        new plpvotingsystem.PartyCandidatesForm(partyName, loggedInStudent, hasVoted).setVisible(true);
                     }
                 }
                 );
@@ -425,7 +446,7 @@ public class StudentDashboard extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new StudentDashboard("TestStudent").setVisible(true);
+                new StudentDashboard("TestStudent", 1).setVisible(true);
             }
         });
     }

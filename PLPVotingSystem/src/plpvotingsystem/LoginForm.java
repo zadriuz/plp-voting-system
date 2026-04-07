@@ -360,10 +360,12 @@ public class LoginForm extends javax.swing.JFrame {
                                 int has_voted = studentRs.getInt("has_voted");
 
                                 if (has_voted == 1) {
-                                    JOptionPane.showMessageDialog(this, "You have already voted!");
+                                    JOptionPane.showMessageDialog(this, "You have already voted! System available for viewing only.");
+                                    this.dispose();
+                                    new plpvotingsystem.StudentDashboard(studentNumber, has_voted).setVisible(true);
                                 } else {
                                     this.dispose();
-                                    new plpvotingsystem.StudentDashboard(studentNumber).setVisible(true);
+                                    new plpvotingsystem.StudentDashboard(studentNumber, has_voted).setVisible(true);
                                 }
                             } else {
                                 // If it's not an admin AND not a student, kick them out.
