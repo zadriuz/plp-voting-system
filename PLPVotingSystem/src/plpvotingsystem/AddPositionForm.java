@@ -17,8 +17,10 @@ public class AddPositionForm extends javax.swing.JFrame {
     public AddPositionForm() {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         lblTitle.setText("Register Position");;
         
+        this.getContentPane().setBackground(new java.awt.Color(245,245,245));
         this.setIconImage(plpIcon);
     }
 
@@ -26,6 +28,8 @@ public class AddPositionForm extends javax.swing.JFrame {
     public AddPositionForm(int posId, String posName, int maxPos) {
         initComponents();
         this.setLocationRelativeTo(null);
+        
+        this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         lblTitle.setText("Edit Position");
         btnSubmit.setText("Update");
         txtPosName.setEnabled(false); // Do not let them change the name, only max votes! (explained below)
@@ -48,6 +52,7 @@ public class AddPositionForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Register Position");
+        setResizable(false);
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(0, 0, 0));

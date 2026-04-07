@@ -346,6 +346,9 @@ public class LoginForm extends javax.swing.JFrame {
                     if (currentPhase.equals("CLOSED")) {
                         JOptionPane.showMessageDialog(this, "The election has officially concluded. Voting is now closed.");
                         return;
+                    } else if (currentPhase.equals("SETUP")){
+                        JOptionPane.showMessageDialog(this, "System under maintenance. Please try again later!");
+                        return;
                     } else {
                         String studentSql = "SELECT * FROM tblVoters WHERE student_number = ? AND BINARY passcode = ?";
                         try (PreparedStatement studentPst = conn.prepareStatement(studentSql)) {
