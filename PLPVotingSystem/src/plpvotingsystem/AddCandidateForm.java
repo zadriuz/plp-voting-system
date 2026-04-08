@@ -334,20 +334,20 @@ public class AddCandidateForm extends javax.swing.JFrame {
         // 2. Convert the dropdown text into the correct position_id (1 to 6)
         // 2. Convert the dropdown directly to the position_id (Index 0 = President(1), Index 5 = P.R.O.(6))
         // 3. Database Insertion
-        if (currentCandidateID == 0) {
-            String selectedPosName = cmbCandidatePosition.getSelectedItem().toString();
-
-            try (Connection conn0 = database.DBConnection.DBConnect(); PreparedStatement pst0 = conn0.prepareStatement("SELECT position_id FROM tblPositions WHERE position_name = ?")) {
-                pst0.setString(1, selectedPosName);
+        
+        try (Connection conn0 = database.DBConnection.DBConnect(); PreparedStatement pst0 = conn0.prepareStatement("SELECT * FROM tblPositions WHERE position_name = ?")) {
+                pst0.setString(1, positionName);
                 ResultSet rs = pst0.executeQuery();
 
-                if (rs.next()) {
-                    assignedPositionID = rs.getInt("position_id");
+                while(rs.next()) {
+                    this.assignedPositionID = rs.getInt("position_id");
                 }
             } catch (java.sql.SQLException e) {
                 JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
                 return;
             }
+        
+        if (currentCandidateID == 0) {
 
             try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("INSERT INTO tblCandidates (full_name, position_id, party_list, image_path, plataporma, credentials) VALUES (?, ?, ?, ?, ?, ?)")) {
 

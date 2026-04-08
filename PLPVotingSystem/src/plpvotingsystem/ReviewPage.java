@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.security.MessageDigest;
+import java.util.Formatter;
 
 public class ReviewPage extends javax.swing.JFrame {
 
@@ -294,13 +296,22 @@ public class ReviewPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
         try (
-                Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst1 = conn.prepareStatement("SELECT candidate_id FROM tblCandidates WHERE full_name = ? AND position_id = ?"); PreparedStatement pst2 = conn.prepareStatement("INSERT INTO tblVotes(candidate_id) VALUES (?)"); PreparedStatement pst3 = conn.prepareStatement("UPDATE tblVoters SET has_voted = 1 WHERE student_number = ?")) {
+                Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst1 = conn.prepareStatement("SELECT candidate_id FROM tblCandidates WHERE full_name = ? AND position_id = ?"); PreparedStatement pst2 = conn.prepareStatement("INSERT INTO tblVotes(candidate_id, vote_hash) VALUES (?, ?)"); PreparedStatement pst3 = conn.prepareStatement("UPDATE tblVoters SET has_voted = 1 WHERE student_number = ?")) {
 
             // Size the array dynamically!
             int[] selectedIDs = new int[candidateChoices.length];
 
+            String previousHash = "GENESIS_BLOCK"; // Default if the table is totally empty
+            try (PreparedStatement pstHash = conn.prepareStatement("SELECT vote_hash FROM tblVotes ORDER BY vote_id DESC LIMIT 1")) {
+                ResultSet rsHash = pstHash.executeQuery();
+                if (rsHash.next()) {
+                    previousHash = rsHash.getString("vote_hash");
+                }
+            }
+            
             for (int i = 0; i < candidateChoices.length; i++) {
                 pst1.setString(1, candidateChoices[i]);
                 pst1.setInt(2, positionIds.get(i)); // Use the real ID!
@@ -314,11 +325,21 @@ public class ReviewPage extends javax.swing.JFrame {
             }
 
             for (int i = 0; i < selectedIDs.length; i++) {
-                // SAFETY CHECK: Only submit a vote if an actual candidate ID was found!
                 if (selectedIDs[i] > 0) {
-                    pst2.setInt(1, selectedIDs[i]);
-                    pst2.addBatch();
-                }
+                // 1. Combine the data
+                String rawData = selectedIDs[i] + previousHash;
+                
+                // 2. Grind it into a new hash
+                String newHash = SecurityUtil.generateHash(rawData);
+                
+                // 3. Add both to the database insert
+                pst2.setInt(1, selectedIDs[i]);
+                pst2.setString(2, newHash);
+                pst2.addBatch();
+                
+                // 4. CRITICAL: The new hash becomes the "previous" hash for the next vote in the loop!
+                previousHash = newHash; 
+            }
             }
             pst2.executeBatch();
 
@@ -327,7 +348,7 @@ public class ReviewPage extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, "Your vote has been successfully submitted! Thank you for voting.");
             this.dispose();
-            new plpvotingsystem.LoginForm().setVisible(true);
+            new plpvotingsystem.StudentDashboard(studentNo, 1).setVisible(true);
 
         } catch (java.sql.SQLException e) {
             JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());

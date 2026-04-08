@@ -103,6 +103,8 @@ public class ElectionResultsForm extends javax.swing.JFrame {
         generateWinnersSummary();
     }
 
+    
+    
     private void loadLiveResults() {
         pnlGraphs.removeAll();
         // Use the infinite row trick for the graphs! 2 columns, infinite rows.
@@ -455,6 +457,8 @@ public class ElectionResultsForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnReopenActionPerformed
 
+    
+    
     /**
      * @param args the command line arguments
      */

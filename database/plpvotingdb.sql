@@ -68,7 +68,7 @@ CREATE TABLE `tblcandidates` (
 
 LOCK TABLES `tblcandidates` WRITE;
 /*!40000 ALTER TABLE `tblcandidates` DISABLE KEYS */;
-INSERT INTO `tblcandidates` VALUES (1,'Candidate A','United Students Alliance',1,'Dummy credentials for testing.','Dummy platform for testing.',NULL),(2,'Candidate B','Progressive Youth Coalition',1,'Dummy credentials for testing.','Dummy platform for testing.',NULL),(3,'Abstain','Test Party2',1,'Try','Try',NULL),(4,'Candidate C','United Students Alliance',2,'try','test',NULL),(5,'Candidate D','Progressive Youth Coalition',2,'try','test',NULL),(6,'Abstain','TestParty 2',2,'try','test',NULL),(9,'Candidate E','United Students Alliance',3,'try','try',NULL),(10,'Candidate F','Progressive Youth Coalition',3,'try','try',NULL),(11,'Abstain','T',3,'try','try',NULL),(12,'Candidate G','United Students Alliance',4,'hi','hello',NULL),(13,'Candidate H','Progressive Youth Coalition',4,'test','hi',NULL),(14,'Abstain','testParty3',4,'hi','test',NULL),(15,'Candidate I','United Students Alliance',5,'he','his',NULL),(16,'Candidate J','Independent',5,'she','her',NULL),(17,'Abstain','testParty3',5,'she','his',NULL),(18,'Candidate K','United Students Alliance',6,'hea','shea',NULL),(20,'Abstain','testParty7',6,'hia','shia',NULL),(25,'Candidate KL','Progressive Youth Coalition',6,'• Perfect Attendance','• Clean Air \n• Clean Water','imgCandidates\\plpIcon.png');
+INSERT INTO `tblcandidates` VALUES (1,'Candidate A','United Students Alliance',1,'Dummy credentials for testing.','Dummy platform for testing.','imgCandidates\\WIN_20260408_13_31_12_Pro.jpg'),(2,'Joseph C. Ytac','Progressive Youth Coalition',1,'Dummy credentials for testing.','Dummy platform for testing.','imgCandidates\\WIN_20260408_13_31_01_Pro.jpg'),(3,'Abstain','Test Party2',1,'Try','Try',NULL),(4,'Candidate C','United Students Alliance',2,'try','test',NULL),(5,'Candidate D','Progressive Youth Coalition',2,'try','test',NULL),(6,'Abstain','TestParty 2',2,'try','test',NULL),(9,'Candidate E','United Students Alliance',3,'try','try',NULL),(10,'Candidate F','Progressive Youth Coalition',3,'try','try',NULL),(11,'Abstain','T',3,'try','try',NULL),(12,'Candidate G','United Students Alliance',4,'hi','hello',NULL),(13,'Candidate H','Progressive Youth Coalition',4,'test','hi',NULL),(14,'Abstain','testParty3',4,'hi','test',NULL),(15,'Candidate I','United Students Alliance',5,'he','his',NULL),(16,'Candidate J','Independent',5,'she','her',NULL),(17,'Abstain','testParty3',5,'she','his',NULL),(18,'Candidate K','United Students Alliance',6,'hea','shea',NULL),(20,'Abstain','testParty7',6,'hia','shia',NULL),(25,'Candidate KL','Progressive Youth Coalition',6,'• Perfect Attendance','• Clean Air \n• Clean Water','imgCandidates\\plpIcon.png');
 /*!40000 ALTER TABLE `tblcandidates` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -170,7 +170,7 @@ CREATE TABLE `tblvoters` (
 
 LOCK TABLES `tblvoters` WRITE;
 /*!40000 ALTER TABLE `tblvoters` DISABLE KEYS */;
-INSERT INTO `tblvoters` VALUES ('12345678','testpass123',0,'BSIT','1','A'),('232','test',0,'BSIT','1','A'),('25-00722','p@$nA81q',0,'BSIT','1','A'),('25-00723','JSuihsHv',0,'BSIT','1','E'),('25-00724','S)6(8ByY',0,'BSIT','1','A'),('25-00726','XMrQ3vWJ',0,'BSIT','1','E');
+INSERT INTO `tblvoters` VALUES ('12345678','testpass123',0,'BSIT','1','A'),('23-00212','6(FnYWsT',0,'BSIT','3','C'),('232','test',1,'BSIT','1','A'),('25-00694','bBa)m&M)',0,'BSIT','1','E'),('25-00703','s*X*VJS4',0,'BSIT','1','A'),('25-00705','sg&9wzE^',0,'BSIT','1','A'),('25-00710','63Q7QJl$',0,'BSIT','1','E'),('25-00722','p@$nA81q',0,'BSIT','1','A'),('25-00723','JSuihsHv',0,'BSIT','1','E'),('25-00724','S)6(8ByY',0,'BSIT','1','A'),('25-00726','XMrQ3vWJ',0,'BSIT','1','E');
 /*!40000 ALTER TABLE `tblvoters` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,8 +184,9 @@ DROP TABLE IF EXISTS `tblvotes`;
 CREATE TABLE `tblvotes` (
   `vote_id` int NOT NULL AUTO_INCREMENT,
   `candidate_id` int DEFAULT NULL,
+  `vote_hash` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`vote_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -194,7 +195,7 @@ CREATE TABLE `tblvotes` (
 
 LOCK TABLES `tblvotes` WRITE;
 /*!40000 ALTER TABLE `tblvotes` DISABLE KEYS */;
-INSERT INTO `tblvotes` VALUES (1,1),(3,3),(4,2),(5,6),(6,2),(7,6),(8,2),(9,5),(10,1),(11,5),(12,9),(13,2),(14,5),(15,11),(16,2),(17,6),(18,9),(19,2),(20,6),(21,9),(22,2),(23,6),(24,9),(25,2),(26,5),(27,10),(28,2),(29,5),(30,10),(31,2),(32,4),(33,10),(34,2),(35,4),(36,11),(37,2),(38,4),(39,11),(40,2),(41,4),(42,11),(43,3),(44,5),(45,11),(46,3),(47,5),(48,11),(49,3),(50,5),(51,11),(52,2),(53,4),(54,10),(55,12),(56,17),(57,19),(58,1),(59,4),(60,10),(61,14),(62,15),(63,20),(64,3),(65,5),(66,10),(67,13),(68,16),(69,20),(70,2),(71,6),(72,11),(73,14),(74,15),(75,19),(76,3),(77,6),(78,10),(79,12),(80,16),(81,18),(82,1),(83,4),(84,11),(85,13),(86,16),(87,18),(88,1),(89,5),(90,9),(91,13),(92,15),(93,25);
+INSERT INTO `tblvotes` VALUES (1,1,'8851ce091b2d15762905d105f5408b58421e01f2101b6e2be24160c0fe05d0b6'),(2,5,'cd4b34b72dcb3f2f9a47e8556765ae7ff6591c9a6dbddc05189cb381ede5a49d'),(3,10,'4879ca1ef24c971b7a03421b7762a982994bda332c5a195ffefa0dea85847820'),(4,12,'44291d2e165ba6dce4db0e9f4082aa6a1f3c57c57bbaa1e5ab6e35bc5ef4d7db'),(5,16,'5dc15434a833f4b2c0e025434cdfb4549110809a29df39ffc06ad0f868d6df9f'),(6,20,'dede4e7cece421bed5d33bee64684930d4a564df575a8dd3cabc360e38bf57a3');
 /*!40000 ALTER TABLE `tblvotes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -207,4 +208,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-07 15:29:36
+-- Dump completed on 2026-04-08 19:06:34

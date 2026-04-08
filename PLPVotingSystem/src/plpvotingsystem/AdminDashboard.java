@@ -86,6 +86,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblGreeting = new javax.swing.JLabel();
         btnManageParty = new plpvotingsystem.RoundedButton();
         btnManagePosition = new plpvotingsystem.RoundedButton();
+        btnVerifyIntegrity = new plpvotingsystem.RoundedButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Dashboard");
@@ -171,6 +172,19 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
 
+        btnVerifyIntegrity.setBackground(new java.awt.Color(250, 192, 45));
+        btnVerifyIntegrity.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        btnVerifyIntegrity.setForeground(new java.awt.Color(0, 0, 0));
+        btnVerifyIntegrity.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plpvotingsystem/verifyDB.png"))); // NOI18N
+        btnVerifyIntegrity.setText("Verify Database Integrity");
+        btnVerifyIntegrity.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVerifyIntegrity.setIconTextGap(10);
+        btnVerifyIntegrity.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerifyIntegrityActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -188,10 +202,13 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnManagePosition))
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnConcludeElect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lblGreeting, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnConcludeElect, javax.swing.GroupLayout.PREFERRED_SIZE, 758, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnVerifyIntegrity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -208,7 +225,9 @@ public class AdminDashboard extends javax.swing.JFrame {
                     .addComponent(btnManageParty, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnManagePosition, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btnConcludeElect, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnConcludeElect, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVerifyIntegrity, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
@@ -280,6 +299,55 @@ public class AdminDashboard extends javax.swing.JFrame {
         new plpvotingsystem.ManagePositionsForm(this.currentAdmin).setVisible(true);
     }//GEN-LAST:event_btnManagePositionActionPerformed
 
+    private void btnVerifyIntegrityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyIntegrityActionPerformed
+        try (Connection conn = database.DBConnection.DBConnect(); 
+             PreparedStatement pst = conn.prepareStatement("SELECT candidate_id, vote_hash FROM tblVotes ORDER BY vote_id ASC")) {
+            
+            ResultSet rs = pst.executeQuery();
+            String previousHash = "GENESIS_BLOCK";
+            int rowCount = 0;
+            boolean isCorrupted = false;
+            int corruptedRow = 0;
+
+            while (rs.next()) {
+                rowCount++;
+                int candidateId = rs.getInt("candidate_id");
+                String storedHash = rs.getString("vote_hash");
+                
+                // Recalculate what the hash SHOULD be
+                String rawData = candidateId + previousHash;
+                String expectedHash = SecurityUtil.generateHash(rawData); // Make sure generateHash is available in this class too!
+
+                // The Moment of Truth
+                if (!expectedHash.equals(storedHash)) {
+                    isCorrupted = true;
+                    corruptedRow = rowCount;
+                    break; // Stop checking, the chain is broken!
+                }
+                
+                // The current stored hash becomes the previous hash for the next row
+                previousHash = storedHash;
+            }
+
+            if (isCorrupted) {
+                JOptionPane.showMessageDialog(this, 
+                    "CRITICAL SECURITY ALERT: Database tampering detected!\n\nThe cryptographic chain was broken at Vote #" + corruptedRow + ".\nAn admin has illegally modified the database.", 
+                    "Integrity Audit Failed", 
+                    JOptionPane.ERROR_MESSAGE);
+            } else if (rowCount == 0) {
+                 JOptionPane.showMessageDialog(this, "The ballot box is currently empty. No votes to verify.", "Integrity Audit", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "Database Integrity Verified.\n\nSuccessfully audited " + rowCount + " votes.\nThe cryptographic chain is completely intact.", 
+                    "Integrity Audit Passed", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Audit Error: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnVerifyIntegrityActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -321,6 +389,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnManageParty;
     private javax.swing.JButton btnManagePosition;
     private javax.swing.JButton btnManageVoter;
+    private javax.swing.JButton btnVerifyIntegrity;
     private plpvotingsystem.GlobalHeader globalHeader2;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

@@ -336,7 +336,7 @@ public class ManageStudentsForm extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Successfully deleted " + selectedRows.length + " record(s).");
 
                 // 5. Refresh your table here! (Call whatever method you use to load the table)
-                // loadStudentTable(); 
+                 loadStudentTable(); 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
             }

@@ -29,6 +29,8 @@ public class VotingForm extends javax.swing.JFrame {
     plpvotingsystem.VotingStepper stepper;
     ButtonGroup groupCandidates = new ButtonGroup();
     String loggedInStudent;
+    
+    
 
     private void loadCandidates(int stepIndex) {
         pnlCandidates.removeAll();
@@ -109,7 +111,7 @@ public class VotingForm extends javax.swing.JFrame {
 
     public VotingForm(String studentNumber) {
         initComponents();
-
+        
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         this.getContentPane().removeAll();
         
@@ -250,9 +252,12 @@ public class VotingForm extends javax.swing.JFrame {
 
         // 4. Add the finished pnlMain to the frame ONLY ONCE
         this.getContentPane().add(pnlMain, java.awt.BorderLayout.CENTER);
+        
+        this.getRootPane().setDefaultButton(customBtnNext);
 
         loggedInStudent = studentNumber;
         loadCandidates(currentStepIndex);
+        
     }
 
     @SuppressWarnings("unchecked")
