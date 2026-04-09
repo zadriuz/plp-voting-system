@@ -216,7 +216,7 @@ public class AddStudentForm extends javax.swing.JFrame {
             return;
         }
 
-        if (studentID.length() != 8) {
+        if (!studentID.matches("\\d{2}-\\d{5}")) {
             JOptionPane.showMessageDialog(this, "Student ID invalid. Must be exactly 8 characters including the dash (e.g. 25-00722)");
             return;
         }
