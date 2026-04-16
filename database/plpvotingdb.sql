@@ -170,7 +170,7 @@ CREATE TABLE `tblvoters` (
 
 LOCK TABLES `tblvoters` WRITE;
 /*!40000 ALTER TABLE `tblvoters` DISABLE KEYS */;
-INSERT INTO `tblvoters` VALUES ('12345678','testpass123',0,'BSIT','1','A'),('23-00212','6(FnYWsT',0,'BSIT','3','C'),('232','test',1,'BSIT','1','A'),('25-00694','bBa)m&M)',0,'BSIT','1','E'),('25-00703','s*X*VJS4',0,'BSIT','1','A'),('25-00705','sg&9wzE^',0,'BSIT','1','A'),('25-00710','63Q7QJl$',0,'BSIT','1','E'),('25-00722','p@$nA81q',0,'BSIT','1','A'),('25-00723','JSuihsHv',0,'BSIT','1','E'),('25-00724','S)6(8ByY',0,'BSIT','1','A'),('25-00726','XMrQ3vWJ',0,'BSIT','1','E');
+INSERT INTO `tblvoters` VALUES ('12345678','testpass123',0,'BSIT','1','A'),('23-00212','6(FnYWsT',0,'BSIT','3','C'),('232','test',1,'BSIT','1','A'),('25-00694','bBa)m&M)',0,'BSIT','1','E'),('25-00703','s*X*VJS4',0,'BSIT','1','A'),('25-00705','sg&9wzE^',0,'BSIT','1','A'),('25-00710','63Q7QJl$',0,'BSIT','1','E'),('25-00722','p@$nA81q',1,'BSIT','1','A'),('25-00723','JSuihsHv',0,'BSIT','1','E'),('25-00724','S)6(8ByY',0,'BSIT','1','A'),('25-00726','XMrQ3vWJ',0,'BSIT','1','E');
 /*!40000 ALTER TABLE `tblvoters` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -186,7 +186,7 @@ CREATE TABLE `tblvotes` (
   `candidate_id` int DEFAULT NULL,
   `vote_hash` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`vote_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -195,7 +195,7 @@ CREATE TABLE `tblvotes` (
 
 LOCK TABLES `tblvotes` WRITE;
 /*!40000 ALTER TABLE `tblvotes` DISABLE KEYS */;
-INSERT INTO `tblvotes` VALUES (1,1,'8851ce091b2d15762905d105f5408b58421e01f2101b6e2be24160c0fe05d0b6'),(2,5,'cd4b34b72dcb3f2f9a47e8556765ae7ff6591c9a6dbddc05189cb381ede5a49d'),(3,10,'4879ca1ef24c971b7a03421b7762a982994bda332c5a195ffefa0dea85847820'),(4,12,'44291d2e165ba6dce4db0e9f4082aa6a1f3c57c57bbaa1e5ab6e35bc5ef4d7db'),(5,16,'5dc15434a833f4b2c0e025434cdfb4549110809a29df39ffc06ad0f868d6df9f'),(6,20,'dede4e7cece421bed5d33bee64684930d4a564df575a8dd3cabc360e38bf57a3');
+INSERT INTO `tblvotes` VALUES (1,1,'8851ce091b2d15762905d105f5408b58421e01f2101b6e2be24160c0fe05d0b6'),(2,5,'cd4b34b72dcb3f2f9a47e8556765ae7ff6591c9a6dbddc05189cb381ede5a49d'),(3,10,'4879ca1ef24c971b7a03421b7762a982994bda332c5a195ffefa0dea85847820'),(4,12,'44291d2e165ba6dce4db0e9f4082aa6a1f3c57c57bbaa1e5ab6e35bc5ef4d7db'),(5,16,'5dc15434a833f4b2c0e025434cdfb4549110809a29df39ffc06ad0f868d6df9f'),(6,20,'dede4e7cece421bed5d33bee64684930d4a564df575a8dd3cabc360e38bf57a3'),(7,1,'42bb970e4d0b78528379c62762eafa2d20aa98d47ea6caaab3d0102def57fff5'),(8,5,'c7cdf15309b85c2157ef16c0708a593d0845866b45ca7b67f3af5c44dd4caeea'),(9,11,'80fb230e16680951d4c90e35c0b26d6600f280492f3276d597a80c61703562ae'),(10,12,'ec9fa8f0d777aab349dc1a32165401ffb83fdab56021e2c7a5321814c076c704'),(11,16,'b68b1e1dd3a975981d6af8561b70725cd29e4e49f2336ce1b5a0c5dd3b934ed3'),(12,25,'d640ff2661b9a38e25edadcbce6afbe70c34d1487bf1ab0cdc3100f1529ef6b9');
 /*!40000 ALTER TABLE `tblvotes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -208,4 +208,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-08 19:06:34
+-- Dump completed on 2026-04-16 13:09:20
