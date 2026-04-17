@@ -136,7 +136,7 @@ public class AddStudentForm extends javax.swing.JFrame {
         lblStudentID1.setText("Course");
 
         lblYear.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lblYear.setText("Year");
+        lblYear.setText("Year Level");
 
         lblSection.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblSection.setText("Section");
