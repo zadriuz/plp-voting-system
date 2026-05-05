@@ -9,6 +9,58 @@ import java.awt.Font;
 
 public class LoginForm extends javax.swing.JFrame {
 
+    private void showCustomMessage(String title, String message, java.awt.Color themeColor) {
+        javax.swing.JDialog msgDialog = new javax.swing.JDialog(this, title, java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        msgDialog.setSize(400, 200);
+        msgDialog.setLocationRelativeTo(this);
+        msgDialog.setUndecorated(true);
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(themeColor, 3));
+        
+        // THE FIX: BorderLayout for perfect spacing
+        pnlContent.setLayout(new java.awt.BorderLayout());
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><div style='text-align: center; width: 280px;'>" + message.replace("\n", "<br>") + "</div></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblMessage.setVerticalAlignment(javax.swing.SwingConstants.CENTER); // Dead center vertically
+
+        javax.swing.JPanel btnPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+        btnPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 20, 0)); // Bottom padding
+        
+        plpvotingsystem.RoundedButton btnOk = new plpvotingsystem.RoundedButton();
+        btnOk.setText("OK");
+        btnOk.setBackground(themeColor);
+        btnOk.setForeground(java.awt.Color.WHITE);
+        btnOk.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOk.setPreferredSize(new java.awt.Dimension(120, 40));
+        
+        // THE FOCUS CUE: Dark outline so the user knows they can hit Enter
+        btnOk.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.DARK_GRAY, 2, true));
+        
+        btnOk.addActionListener(e -> msgDialog.dispose());
+
+        btnPanel.add(btnOk);
+
+        pnlContent.add(lblMessage, java.awt.BorderLayout.CENTER); // Fills middle
+        pnlContent.add(btnPanel, java.awt.BorderLayout.SOUTH);    // Anchors bottom
+
+        msgDialog.add(pnlContent);
+
+        // Bind Enter key AND force visual focus
+        msgDialog.getRootPane().setDefaultButton(btnOk);
+        msgDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnOk.requestFocusInWindow();
+            }
+        });
+
+        msgDialog.setVisible(true);
+    }
+
     public LoginForm() {
         initComponents();
 
@@ -44,7 +96,15 @@ public class LoginForm extends javax.swing.JFrame {
         txtStudentNumber.setUI(new javax.swing.plaf.basic.BasicTextFieldUI());
         pwdPassCode.setUI(new javax.swing.plaf.basic.BasicPasswordFieldUI());
 
-        // --- FIX 2: Restore the Hand Cursor ---
+        // Make sure you have a small login icon (e.g., loginIcon.png, size 20x20) in your SystemIcons folder
+        try {
+            javax.swing.Icon loginIcon = plpvotingsystem.ImageUtil.getSharpIcon("SystemIcons\\login.png", 20, 20);
+            btnLogin.setIcon(loginIcon);
+            btnLogin.setIconTextGap(15); // Adds space between the icon and the text "Log In"
+        } catch (Exception e) {
+            System.out.println("Login icon not found, skipping icon injection.");
+        }
+
         btnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         // --- FIX 3: Setup Initial Placeholders ---
@@ -313,7 +373,7 @@ public class LoginForm extends javax.swing.JFrame {
         String passCode = new String(pwdPassCode.getPassword());
 
         if (studentNumber.trim().isEmpty() || passCode.trim().isEmpty() || studentNumber.equals("Enter your student number") || passCode.equals("Enter your password")) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+            showCustomMessage("Error", "Please fill in all fields.", new java.awt.Color(250, 192, 45));
             return;
         }
 
@@ -344,10 +404,10 @@ public class LoginForm extends javax.swing.JFrame {
                     String currentPhase = rs.getString("current_phase").trim();
 
                     if (currentPhase.equalsIgnoreCase("CLOSED")) {
-                        JOptionPane.showMessageDialog(this, "The election has officially concluded. Voting is now closed.");
+                        showCustomMessage("Alert", "The election has officially concluded. Voting is now closed.", new java.awt.Color(250, 192, 45));
                         return;
-                    } else if (currentPhase.equalsIgnoreCase("SETUP")){
-                        JOptionPane.showMessageDialog(this, "System under maintenance. Please try again later!");
+                    } else if (currentPhase.equalsIgnoreCase("SETUP")) {
+                        showCustomMessage("Alert", "System under maintenance. Please try again later!", new java.awt.Color(250,192,45));
                         return;
                     } else {
                         String studentSql = "SELECT * FROM tblVoters WHERE student_number = ? AND BINARY passcode = ?";
@@ -360,7 +420,7 @@ public class LoginForm extends javax.swing.JFrame {
                                 int has_voted = studentRs.getInt("has_voted");
 
                                 if (has_voted == 1) {
-                                    JOptionPane.showMessageDialog(this, "You have already voted! System available for viewing only.");
+                                    showCustomMessage("Alert", "You have already voted!<br>System available for viewing only.", new java.awt.Color(250, 192, 45));
                                     this.dispose();
                                     new plpvotingsystem.StudentDashboard(studentNumber, has_voted).setVisible(true);
                                 } else {
@@ -369,18 +429,18 @@ public class LoginForm extends javax.swing.JFrame {
                                 }
                             } else {
                                 // If it's not an admin AND not a student, kick them out.
-                                JOptionPane.showMessageDialog(this, "Invalid Username/Student # or Password");
+                                showCustomMessage("Error", "Invalid Username/Student # or Password", new java.awt.Color(220, 53, 69));
                             }
                         }
                     }
                 }
             } catch (java.sql.SQLException e) {
-                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
                 return;
             }
 
         } catch (java.sql.SQLException e) {
-            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
+            showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 

@@ -212,6 +212,129 @@ public class ReviewPage extends javax.swing.JFrame {
 
     }
 
+    private void showSuccessDialog(String generatedPasscode, String votedCandidatesList) {
+        // FIX 1: 'this' is already the top-level window, no need to search for an ancestor!
+        javax.swing.JDialog successDialog = new javax.swing.JDialog(this, "Vote Submitted", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        successDialog.setLayout(new java.awt.BorderLayout());
+        successDialog.setSize(400, 360); // Made slightly taller for the custom buttons
+        successDialog.setLocationRelativeTo(this); // Centers exactly over the ReviewPage
+        successDialog.setUndecorated(true);
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(55, 140, 59), 3));
+        pnlContent.setLayout(new javax.swing.BoxLayout(pnlContent, javax.swing.BoxLayout.Y_AXIS));
+
+        // 1. The Checkmark Icon
+        javax.swing.JLabel lblCheck = new javax.swing.JLabel();
+        try {
+            lblCheck.setIcon(plpvotingsystem.ImageUtil.getSharpIcon("SystemIcons\\checkIcon.png", 70, 70));
+        } catch (Exception e) {
+            lblCheck.setText("✅"); 
+            lblCheck.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 48));
+        }
+        lblCheck.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("Vote successfully recorded!");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+        javax.swing.JLabel lblInstruction = new javax.swing.JLabel("Your receipt code (Highlight to copy):");
+        lblInstruction.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+        lblInstruction.setForeground(java.awt.Color.GRAY);
+        lblInstruction.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+        // 2. The Copyable Passcode 
+        javax.swing.JTextField txtCode = new javax.swing.JTextField(generatedPasscode);
+        txtCode.setEditable(false); 
+        txtCode.setBackground(java.awt.Color.WHITE); 
+        txtCode.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        txtCode.setFont(new java.awt.Font("Consolas", java.awt.Font.BOLD, 28));
+        txtCode.setForeground(new java.awt.Color(55, 140, 59));
+        txtCode.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCode.setMaximumSize(new java.awt.Dimension(300, 60));
+
+        // FIX 2: Swap standard JButtons for your custom RoundedButtons
+        plpvotingsystem.RoundedButton btnPrint = new plpvotingsystem.RoundedButton();
+        btnPrint.setText("Print Receipt");
+        btnPrint.setBackground(new java.awt.Color(55, 140, 59));
+        btnPrint.setForeground(java.awt.Color.WHITE);
+        btnPrint.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        btnPrint.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPrint.setPreferredSize(new java.awt.Dimension(200, 40));
+        btnPrint.setMaximumSize(new java.awt.Dimension(200, 40));
+        btnPrint.addActionListener(e -> printVoterReceipt(studentNo, generatedPasscode, votedCandidatesList));
+
+        plpvotingsystem.RoundedButton btnFinish = new plpvotingsystem.RoundedButton();
+        btnFinish.setText("Finish & Logout");
+        btnFinish.setBackground(new java.awt.Color(220, 53, 69));
+        btnFinish.setForeground(java.awt.Color.WHITE);
+        btnFinish.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        btnFinish.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnFinish.setPreferredSize(new java.awt.Dimension(200, 40));
+        btnFinish.setMaximumSize(new java.awt.Dimension(200, 40));
+        btnFinish.addActionListener(e -> {
+            successDialog.dispose();
+            ReviewPage.this.dispose(); // FIX 3: Tells the exact ReviewPage window to close itself
+            new plpvotingsystem.LoginForm().setVisible(true); 
+        });
+
+        // Assemble
+        pnlContent.add(javax.swing.Box.createVerticalStrut(20));
+        pnlContent.add(lblCheck);
+        pnlContent.add(javax.swing.Box.createVerticalStrut(15));
+        pnlContent.add(lblMessage);
+        pnlContent.add(javax.swing.Box.createVerticalStrut(10));
+        pnlContent.add(lblInstruction);
+        pnlContent.add(txtCode);
+        pnlContent.add(javax.swing.Box.createVerticalStrut(15));
+        pnlContent.add(btnPrint);
+        pnlContent.add(javax.swing.Box.createVerticalStrut(10));
+        pnlContent.add(btnFinish);
+        pnlContent.add(javax.swing.Box.createVerticalStrut(20));
+
+        successDialog.add(pnlContent, java.awt.BorderLayout.CENTER);
+        successDialog.setVisible(true);
+    }
+
+    private void printVoterReceipt(String studentNo, String passcode, String votedCandidates) {
+        try {
+            javax.swing.JTextArea receiptText = new javax.swing.JTextArea();
+            receiptText.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 10)); // Monospaced ensures perfect alignment
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("========================================\n");
+            sb.append("           PLP VOTING SYSTEM            \n");
+            sb.append("      OFFICIAL MANUAL AUDIT BALLOT      \n");
+            sb.append("========================================\n\n");
+
+            sb.append("Date/Time : ").append(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append("\n");
+            sb.append("Voter ID  : ").append(studentNo).append("\n");
+            sb.append("Passcode  : ").append(passcode).append("\n\n");
+
+            sb.append("----------- VOTES CAST -----------------\n");
+            // Voted candidates string should ideally be formatted with line breaks before passing it here
+            sb.append(votedCandidates).append("\n");
+            sb.append("----------------------------------------\n\n");
+
+            sb.append("STATUS: VERIFIED & SECURED\n");
+            sb.append("INSTRUCTION: Verify the contents of this\n");
+            sb.append("receipt. Once verified, drop this slip\n");
+            sb.append("into the official manual counting box.\n");
+            sb.append("========================================\n");
+
+            receiptText.setText(sb.toString());
+
+            // Trigger native print dialog
+            boolean complete = receiptText.print();
+            if (complete) {
+                JOptionPane.showMessageDialog(this, "Receipt sent to printer.");
+            }
+        } catch (java.awt.print.PrinterException pe) {
+            JOptionPane.showMessageDialog(this, "Printer Error: " + pe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -296,7 +419,7 @@ public class ReviewPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
+
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
         try (
                 Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst1 = conn.prepareStatement("SELECT candidate_id FROM tblCandidates WHERE full_name = ? AND position_id = ?"); PreparedStatement pst2 = conn.prepareStatement("INSERT INTO tblVotes(candidate_id, vote_hash) VALUES (?, ?)"); PreparedStatement pst3 = conn.prepareStatement("UPDATE tblVoters SET has_voted = 1 WHERE student_number = ?")) {
@@ -311,7 +434,7 @@ public class ReviewPage extends javax.swing.JFrame {
                     previousHash = rsHash.getString("vote_hash");
                 }
             }
-            
+
             for (int i = 0; i < candidateChoices.length; i++) {
                 pst1.setString(1, candidateChoices[i]);
                 pst1.setInt(2, positionIds.get(i)); // Use the real ID!
@@ -326,30 +449,41 @@ public class ReviewPage extends javax.swing.JFrame {
 
             for (int i = 0; i < selectedIDs.length; i++) {
                 if (selectedIDs[i] > 0) {
-                // 1. Combine the data
-                String rawData = selectedIDs[i] + previousHash;
-                
-                // 2. Grind it into a new hash
-                String newHash = SecurityUtil.generateHash(rawData);
-                
-                // 3. Add both to the database insert
-                pst2.setInt(1, selectedIDs[i]);
-                pst2.setString(2, newHash);
-                pst2.addBatch();
-                
-                // 4. CRITICAL: The new hash becomes the "previous" hash for the next vote in the loop!
-                previousHash = newHash; 
-            }
+                    // 1. Combine the data
+                    String rawData = selectedIDs[i] + previousHash;
+
+                    // 2. Grind it into a new hash
+                    String newHash = SecurityUtil.generateHash(rawData);
+
+                    // 3. Add both to the database insert
+                    pst2.setInt(1, selectedIDs[i]);
+                    pst2.setString(2, newHash);
+                    pst2.addBatch();
+
+                    // 4. CRITICAL: The new hash becomes the "previous" hash for the next vote in the loop!
+                    previousHash = newHash;
+                }
             }
             pst2.executeBatch();
 
             pst3.setString(1, studentNo);
             pst3.executeUpdate();
 
-            JOptionPane.showMessageDialog(this, "Your vote has been successfully submitted! Thank you for voting.");
-            this.dispose();
-            new plpvotingsystem.StudentDashboard(studentNo, 1).setVisible(true);
+            // 1. GENERATE A RANDOM PASSCODE FOR THE RECEIPT
+            String generatedPasscode = "PLP-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
+            // 2. FORMAT THE VOTED CANDIDATES INTO A SINGLE STRING
+            StringBuilder receiptVotes = new StringBuilder();
+            for (int i = 0; i < positionNames.size(); i++) {
+                String pos = positionNames.get(i);
+                String choice = candidateChoices[i] != null ? candidateChoices[i] : "Abstain";
+                receiptVotes.append(pos).append(" : ").append(choice).append("\n");
+            }
+
+            // 3. PASS THE ARGUMENTS TO THE DIALOG
+            showSuccessDialog(generatedPasscode, receiptVotes.toString());
+
+            // 4. (The dispose and dashboard redirect are DELETED because the popup dialog handles closing the window now!)
         } catch (java.sql.SQLException e) {
             JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
             return;

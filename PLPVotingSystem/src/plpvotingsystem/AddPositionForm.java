@@ -10,6 +10,57 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class AddPositionForm extends javax.swing.JFrame {
+    private void showCustomMessage(String title, String message, java.awt.Color themeColor) {
+        javax.swing.JDialog msgDialog = new javax.swing.JDialog(this, title, java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        msgDialog.setSize(400, 200);
+        msgDialog.setLocationRelativeTo(this);
+        msgDialog.setUndecorated(true);
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(themeColor, 3));
+        
+        pnlContent.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><center style='width: 280px;'>" + message.replace("\n", "<br>") + "</center></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.JPanel btnPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+        
+        plpvotingsystem.RoundedButton btnOk = new plpvotingsystem.RoundedButton();
+        btnOk.setText("OK");
+        btnOk.setBackground(themeColor);
+        btnOk.setForeground(java.awt.Color.WHITE);
+        btnOk.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOk.setPreferredSize(new java.awt.Dimension(120, 40));
+        btnOk.setDialogButton(true); 
+        btnOk.addActionListener(e -> msgDialog.dispose());
+
+        btnPanel.add(btnOk);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0); 
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        pnlContent.add(lblMessage, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
+        pnlContent.add(btnPanel, gbc);
+
+        msgDialog.add(pnlContent);
+
+        msgDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnOk.requestFocusInWindow();
+            }
+        });
+
+        msgDialog.setVisible(true);
+    }
 
     int currentPositionId = -1; // -1 means we are ADDING a new position
      java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
@@ -145,7 +196,7 @@ public class AddPositionForm extends javax.swing.JFrame {
                 pst.setInt(2, maxVotes);
                 pst.executeUpdate();
 
-                JOptionPane.showMessageDialog(this, "Position successfully registered!");
+                showCustomMessage("Success", "Successfully registered position!", new java.awt.Color(55, 140, 59));
                 txtPosName.setText("");
                 spnMaxPos.setValue(1); // Reset spinner
 
@@ -160,7 +211,7 @@ public class AddPositionForm extends javax.swing.JFrame {
                 pst.setInt(2, this.currentPositionId);
                 pst.executeUpdate();
 
-                JOptionPane.showMessageDialog(this, "Successfully updated maximum votes!");
+                showCustomMessage("Success", "Successfully updated maximum votes!", new java.awt.Color(55, 140, 59));
                 this.dispose();
 
             } catch (java.sql.SQLException e) {

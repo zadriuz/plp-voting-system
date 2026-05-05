@@ -14,11 +14,98 @@ import java.sql.ResultSet;
  * @author PLP
  */
 public class AddStudentForm extends javax.swing.JFrame {
+    private void showCustomMessage(String title, String message, java.awt.Color themeColor) {
+        javax.swing.JDialog msgDialog = new javax.swing.JDialog(this, title, java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        msgDialog.setSize(400, 200);
+        msgDialog.setLocationRelativeTo(this);
+        msgDialog.setUndecorated(true);
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(themeColor, 3));
+        
+        pnlContent.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><center style='width: 280px;'>" + message.replace("\n", "<br>") + "</center></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.JPanel btnPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+        
+        plpvotingsystem.RoundedButton btnOk = new plpvotingsystem.RoundedButton();
+        btnOk.setText("OK");
+        btnOk.setBackground(themeColor);
+        btnOk.setForeground(java.awt.Color.WHITE);
+        btnOk.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOk.setPreferredSize(new java.awt.Dimension(120, 40));
+        btnOk.setDialogButton(true); 
+        btnOk.addActionListener(e -> msgDialog.dispose());
+
+        btnPanel.add(btnOk);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0); 
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        pnlContent.add(lblMessage, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
+        pnlContent.add(btnPanel, gbc);
+
+        msgDialog.add(pnlContent);
+
+        msgDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnOk.requestFocusInWindow();
+            }
+        });
+
+        msgDialog.setVisible(true);
+    }
 
     String currentStudentID = "";
+    private javax.swing.JTextField txtCopyablePass;
+    
+    private void setupCopyablePasscode() {
+        // 1. Hollow out the existing NetBeans label
+        lblPasscodeDisplay.setLayout(new java.awt.BorderLayout());
+        lblPasscodeDisplay.setText(""); 
+
+        // THE GOLDILOCKS FIX: Exactly 35 pixels. 
+        // Large enough to exist, small enough to keep the layout tight!
+        lblPasscodeDisplay.setPreferredSize(new java.awt.Dimension(200, 35));
+        lblPasscodeDisplay.setMinimumSize(new java.awt.Dimension(200, 35));
+
+        // 2. Create the copyable text field 
+        txtCopyablePass = new javax.swing.JTextField("----");
+        txtCopyablePass.setEditable(false); 
+        txtCopyablePass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        
+        // Font bumped to 22 so it fits perfectly inside the 35px height without getting chopped
+        txtCopyablePass.setFont(new java.awt.Font("Consolas", java.awt.Font.BOLD, 22)); 
+        txtCopyablePass.setForeground(new java.awt.Color(55, 140, 59)); // PLP Green
+        txtCopyablePass.setBackground(new java.awt.Color(245, 245, 245)); 
+        txtCopyablePass.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+
+        // 3. Keep the HTML trick for the title and hint!
+        lblGeneratedPass.setText("<html><center>Generated Passcode<br><span style='font-size:11px; color:gray; font-weight:normal;'>(Highlight code to copy)</span></center></html>");
+
+        // 4. Inject ONLY the text field into the hijacked label
+        lblPasscodeDisplay.add(txtCopyablePass, java.awt.BorderLayout.CENTER);
+        
+        lblPasscodeDisplay.revalidate();
+        lblPasscodeDisplay.repaint();
+    }
 
     public AddStudentForm() {
         initComponents();
+        setupCopyablePasscode();
+
+        // THE FIX: Tell the window to re-wrap itself NOW that the big label is inside!
+        this.pack();
 
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         this.getRootPane().setDefaultButton(btnGenerate);
@@ -43,15 +130,19 @@ public class AddStudentForm extends javax.swing.JFrame {
                 txtCourse.setText(course);
                 txtYear.setText(year);
                 txtSection.setText(section);
-                lblPasscodeDisplay.setText(passcode);
+                txtCopyablePass.setText(passcode);
             }
         } catch (java.sql.SQLException e) {
-            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
         }
     }
 
     public AddStudentForm(String studentID) {
         initComponents();
+        setupCopyablePasscode();
+
+        // THE FIX: Tell the window to re-wrap itself NOW that the big label is inside!
+        this.pack();
 
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         this.currentStudentID = studentID;
@@ -212,12 +303,14 @@ public class AddStudentForm extends javax.swing.JFrame {
         String section = txtSection.getText();
 
         if (studentID.isEmpty() || course.isEmpty() || year.isEmpty() || section.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+            showCustomMessage("Error", "Please fill in all fields.", new java.awt.Color(250, 192, 45));
             return;
         }
 
         if (!studentID.matches("\\d{2}-\\d{5}")) {
-            JOptionPane.showMessageDialog(this, "Student ID invalid. Must be exactly 8 characters including the dash (e.g. 25-00722)");
+            showCustomMessage("Error", "Student ID invalid. Must be exactly 8 characters including the dash (e.g. 25-00722)", new java.awt.Color(250, 192, 45));
+            
+            
             return;
         }
 
@@ -229,12 +322,12 @@ public class AddStudentForm extends javax.swing.JFrame {
                 ResultSet rs = pst2.executeQuery();
 
                 if (rs.next()) {
-                    JOptionPane.showMessageDialog(this, "Registration Failed: This Student ID is already registered in the system.", "Duplicate ID", JOptionPane.ERROR_MESSAGE);
+                    showCustomMessage("Duplicate Entry", "Registration Failed: This Student ID is already registered in the system.", new java.awt.Color(220, 53, 69));
                     return;
                 }
 
                 String newPasscode = generatePasscode();
-                lblPasscodeDisplay.setText(newPasscode);
+                txtCopyablePass.setText(newPasscode);
 
                 pst.setString(1, studentID);
                 pst.setString(2, newPasscode);
@@ -245,7 +338,7 @@ public class AddStudentForm extends javax.swing.JFrame {
 
                 pst.executeUpdate();
 
-                JOptionPane.showMessageDialog(this, "Successful enrollment");
+                showCustomMessage("Success", "Successful enrollment!", new java.awt.Color(55, 140, 59));
 
                 txtStudentID.setText("");
                 txtCourse.setText("");
@@ -254,7 +347,7 @@ public class AddStudentForm extends javax.swing.JFrame {
                 // lblPasscodeDisplay.setText(""); -> to prevent losing passcode
 
             } catch (java.sql.SQLException e) {
-                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
                 return;
             }
         } else {
@@ -266,10 +359,10 @@ public class AddStudentForm extends javax.swing.JFrame {
                 
                 pst.executeUpdate();
                 
-                JOptionPane.showMessageDialog(this, "Student Successfully Updated!");
+                showCustomMessage("Success", "Successfully registered student!", new java.awt.Color(55, 140, 59));
                 this.dispose();
             }catch (java.sql.SQLException e){
-                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
             }
         }
     }//GEN-LAST:event_btnGenerateActionPerformed

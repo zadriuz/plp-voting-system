@@ -10,6 +10,125 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 
 public class AdminDashboard extends javax.swing.JFrame {
+    private void showCustomDeletionDialog(String message, Runnable onConfirm) {
+        javax.swing.JDialog confirmDialog = new javax.swing.JDialog(this, "Confirm Deletion", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        confirmDialog.setSize(400, 200); 
+        confirmDialog.setLocationRelativeTo(this); 
+        confirmDialog.setUndecorated(true); 
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 53, 69), 3));
+        
+        pnlContent.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><center style='width: 280px;'>" + message.replace("\n", "<br>") + "</center></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.JPanel buttonPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 15, 0));
+        buttonPanel.setOpaque(false);
+
+        plpvotingsystem.RoundedButton btnYes = new plpvotingsystem.RoundedButton();
+        btnYes.setText("Yes");
+        btnYes.setBackground(new java.awt.Color(220, 53, 69)); 
+        btnYes.setForeground(java.awt.Color.WHITE);
+        btnYes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnYes.setPreferredSize(new java.awt.Dimension(130, 40));
+        btnYes.setDialogButton(true); 
+        btnYes.addActionListener(e -> {
+            confirmDialog.dispose();
+            onConfirm.run(); 
+        });
+
+        plpvotingsystem.RoundedButton btnNo = new plpvotingsystem.RoundedButton();
+        btnNo.setText("Cancel");
+        btnNo.setBackground(new java.awt.Color(200, 200, 200));
+        btnNo.setForeground(java.awt.Color.BLACK);
+        btnNo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNo.setPreferredSize(new java.awt.Dimension(100, 40));
+        btnNo.setDialogButton(true); 
+        btnNo.addActionListener(e -> confirmDialog.dispose()); 
+
+        buttonPanel.add(btnYes);
+        buttonPanel.add(btnNo);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0); 
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        pnlContent.add(lblMessage, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
+        pnlContent.add(buttonPanel, gbc);
+
+        confirmDialog.add(pnlContent);
+        
+        confirmDialog.getRootPane().registerKeyboardAction(e -> confirmDialog.dispose(), javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0), javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
+        
+        confirmDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnYes.requestFocusInWindow();
+            }
+        });
+
+        confirmDialog.setVisible(true);
+    }
+    
+    
+    private void showCustomMessage(String title, String message, java.awt.Color themeColor) {
+        javax.swing.JDialog msgDialog = new javax.swing.JDialog(this, title, java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        msgDialog.setSize(400, 200);
+        msgDialog.setLocationRelativeTo(this);
+        msgDialog.setUndecorated(true);
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(themeColor, 3));
+        
+        // THE FIX: BorderLayout for perfect spacing
+        pnlContent.setLayout(new java.awt.BorderLayout());
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><div style='text-align: center; width: 280px;'>" + message.replace("\n", "<br>") + "</div></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblMessage.setVerticalAlignment(javax.swing.SwingConstants.CENTER); // Dead center vertically
+
+        javax.swing.JPanel btnPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+        btnPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 20, 0)); // Bottom padding
+        
+        plpvotingsystem.RoundedButton btnOk = new plpvotingsystem.RoundedButton();
+        btnOk.setText("OK");
+        btnOk.setBackground(themeColor);
+        btnOk.setForeground(java.awt.Color.WHITE);
+        btnOk.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOk.setPreferredSize(new java.awt.Dimension(120, 40));
+        
+        // THE FOCUS CUE: Dark outline so the user knows they can hit Enter
+        btnOk.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.DARK_GRAY, 2, true));
+        
+        btnOk.addActionListener(e -> msgDialog.dispose());
+
+        btnPanel.add(btnOk);
+
+        pnlContent.add(lblMessage, java.awt.BorderLayout.CENTER); // Fills middle
+        pnlContent.add(btnPanel, java.awt.BorderLayout.SOUTH);    // Anchors bottom
+
+        msgDialog.add(pnlContent);
+
+        // Bind Enter key AND force visual focus
+        msgDialog.getRootPane().setDefaultButton(btnOk);
+        msgDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnOk.requestFocusInWindow();
+            }
+        });
+
+        msgDialog.setVisible(true);
+    }
 
     String currentAdmin = "";
 
@@ -37,7 +156,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 }
             }
         }catch(java.sql.SQLException e){
-            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
             return;
         }
 
@@ -69,7 +188,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 }
             }
         } catch (java.sql.SQLException e) {
-            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
         }
     }
 
@@ -258,25 +377,24 @@ public class AdminDashboard extends javax.swing.JFrame {
             return;
         }
         
-        int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to CONCLUDE the elections?", "Conclude Elections", JOptionPane.WARNING_MESSAGE);
-        if (adminChoice == JOptionPane.YES_OPTION) {
-//            this.dispose();
-//            new plpvotingsystem.ElectionResultsForm(this.currentAdmin).setVisible(true);
-
-            try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("UPDATE tblElectionStatus SET current_phase = ? WHERE status_id = 1")) {
+        // UI REPLACEMENT: Use the custom deletion style for the warning prompt
+        showCustomDeletionDialog("Are you sure you want to CONCLUDE the elections?<br>This action cannot be undone.", () -> {
+            try (Connection conn = database.DBConnection.DBConnect(); 
+                 PreparedStatement pst = conn.prepareStatement("UPDATE tblElectionStatus SET current_phase = ? WHERE status_id = 1")) {
+                
                 pst.setString(1, "CLOSED");
-
                 pst.executeUpdate();
 
-                JOptionPane.showMessageDialog(this, "Election has now been concluded.");
+                // UI REPLACEMENT: Use custom success message
+                showCustomMessage("Election Concluded", "Election has now been concluded.", new java.awt.Color(55, 140, 59));
 
                 this.dispose();
                 new plpvotingsystem.AdminDashboard(this.currentAdmin).setVisible(true);
 
             } catch (java.sql.SQLException e) {
-                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
             }
-        }
+        });
     }//GEN-LAST:event_btnConcludeElectActionPerformed
 
     private void btnManageCandidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCandidateActionPerformed
@@ -314,37 +432,32 @@ public class AdminDashboard extends javax.swing.JFrame {
                 int candidateId = rs.getInt("candidate_id");
                 String storedHash = rs.getString("vote_hash");
                 
-                // Recalculate what the hash SHOULD be
                 String rawData = candidateId + previousHash;
-                String expectedHash = SecurityUtil.generateHash(rawData); // Make sure generateHash is available in this class too!
+                String expectedHash = SecurityUtil.generateHash(rawData); 
 
-                // The Moment of Truth
                 if (!expectedHash.equals(storedHash)) {
                     isCorrupted = true;
                     corruptedRow = rowCount;
-                    break; // Stop checking, the chain is broken!
+                    break; 
                 }
                 
-                // The current stored hash becomes the previous hash for the next row
                 previousHash = storedHash;
             }
 
             if (isCorrupted) {
-                JOptionPane.showMessageDialog(this, 
-                    "CRITICAL SECURITY ALERT: Database tampering detected!\n\nThe cryptographic chain was broken at Vote #" + corruptedRow + ".\nAn admin has illegally modified the database.", 
-                    "Integrity Audit Failed", 
-                    JOptionPane.ERROR_MESSAGE);
+                showCustomMessage("Integrity Audit Failed", 
+                    "CRITICAL SECURITY ALERT: Database tampering detected!<br><br>The cryptographic chain was broken at Vote #" + corruptedRow + ".<br>An admin has illegally modified the database.", 
+                    new java.awt.Color(220, 53, 69));
             } else if (rowCount == 0) {
-                 JOptionPane.showMessageDialog(this, "The ballot box is currently empty. No votes to verify.", "Integrity Audit", JOptionPane.INFORMATION_MESSAGE);
+                 showCustomMessage("Integrity Audit", "The ballot box is currently empty. No votes to verify.", new java.awt.Color(250, 192, 45));
             } else {
-                JOptionPane.showMessageDialog(this, 
-                    "Database Integrity Verified.\n\nSuccessfully audited " + rowCount + " votes.\nThe cryptographic chain is completely intact.", 
-                    "Integrity Audit Passed", 
-                    JOptionPane.INFORMATION_MESSAGE);
+                showCustomMessage("Integrity Audit Passed", 
+                    "Database Integrity Verified.<br><br>Successfully audited " + rowCount + " votes.<br>The cryptographic chain is completely intact.", 
+                    new java.awt.Color(55, 140, 59));
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Audit Error: " + e.getMessage());
+            showCustomMessage("Audit Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
         }
     }//GEN-LAST:event_btnVerifyIntegrityActionPerformed
 

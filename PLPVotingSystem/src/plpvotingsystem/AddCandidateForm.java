@@ -15,11 +15,70 @@ import java.sql.ResultSet;
  */
 public class AddCandidateForm extends javax.swing.JFrame {
 
+    private void showCustomMessage(String title, String message, java.awt.Color themeColor) {
+        javax.swing.JDialog msgDialog = new javax.swing.JDialog(this, title, java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        msgDialog.setSize(400, 200);
+        msgDialog.setLocationRelativeTo(this);
+        msgDialog.setUndecorated(true);
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(themeColor, 3));
+
+        pnlContent.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><center style='width: 280px;'>" + message.replace("\n", "<br>") + "</center></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.JPanel btnPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+
+        plpvotingsystem.RoundedButton btnOk = new plpvotingsystem.RoundedButton();
+        btnOk.setText("OK");
+        btnOk.setBackground(themeColor);
+        btnOk.setForeground(java.awt.Color.WHITE);
+        btnOk.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOk.setPreferredSize(new java.awt.Dimension(120, 40));
+        btnOk.setDialogButton(true);
+        btnOk.addActionListener(e -> msgDialog.dispose());
+
+        btnPanel.add(btnOk);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0);
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        pnlContent.add(lblMessage, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
+        pnlContent.add(btnPanel, gbc);
+
+        msgDialog.add(pnlContent);
+
+        msgDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnOk.requestFocusInWindow();
+            }
+        });
+
+        msgDialog.setVisible(true);
+    }
+
     int currentCandidateID = 0;
     int assignedPositionID = 0;
 
     public AddCandidateForm() {
         initComponents();
+        
+        // THE FIX: Force the text areas to wrap text dynamically by word!
+        txtPlataporma.setLineWrap(true);
+        txtPlataporma.setWrapStyleWord(true);
+        txtCredentials.setLineWrap(true);
+        txtCredentials.setWrapStyleWord(true);
+
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         this.getRootPane().setDefaultButton(btnRegister);
         loadPartyLists();
@@ -34,6 +93,13 @@ public class AddCandidateForm extends javax.swing.JFrame {
 
     public AddCandidateForm(int candidateID) {
         initComponents();
+        
+        // THE FIX: Force the text areas to wrap text dynamically by word!
+        txtPlataporma.setLineWrap(true);
+        txtPlataporma.setWrapStyleWord(true);
+        txtCredentials.setLineWrap(true);
+        txtCredentials.setWrapStyleWord(true);
+
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         loadPartyLists();
         loadPositionsDropdown();
@@ -93,7 +159,9 @@ public class AddCandidateForm extends javax.swing.JFrame {
                 txtCredentials.setText(credentials);
             }
         } catch (java.sql.SQLException e) {
-            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
+
+            return;
         }
     }
 
@@ -118,6 +186,7 @@ public class AddCandidateForm extends javax.swing.JFrame {
         lblCandidateParty1 = new javax.swing.JLabel();
         lblCandidateParty2 = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
+        btnRemoveImage = new plpvotingsystem.RoundedButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Register Candidate");
@@ -183,6 +252,16 @@ public class AddCandidateForm extends javax.swing.JFrame {
         lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblTitle.setText("Register Candidate");
 
+        btnRemoveImage.setBackground(new java.awt.Color(255, 102, 102));
+        btnRemoveImage.setForeground(new java.awt.Color(0, 0, 0));
+        btnRemoveImage.setText("Remove Image");
+        btnRemoveImage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRemoveImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveImageActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -205,9 +284,11 @@ public class AddCandidateForm extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lblCandidatePic)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnChooseImg))
+                                .addComponent(btnChooseImg)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRemoveImage))
                             .addComponent(lblPath, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(22, 22, 22)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane1)
                             .addComponent(lblCandidateParty2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -250,7 +331,8 @@ public class AddCandidateForm extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblCandidatePic)
-                            .addComponent(btnChooseImg))
+                            .addComponent(btnChooseImg)
+                            .addComponent(btnRemoveImage))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblPath))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
@@ -290,7 +372,7 @@ public class AddCandidateForm extends javax.swing.JFrame {
                 lblPath.setText("imgCandidates\\" + sourceFile.getName());
 
             } catch (java.io.IOException ex) {
-                JOptionPane.showMessageDialog(this, "Failed to copy image into system: " + ex.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+                showCustomMessage("File Error", "Failed to copy image into system: " + ex.getMessage(), new java.awt.Color(220, 53, 69));
             }
         }
     }//GEN-LAST:event_btnChooseImgActionPerformed
@@ -307,7 +389,7 @@ public class AddCandidateForm extends javax.swing.JFrame {
                 cmbParty.addItem(partylistName);
             }
         } catch (java.sql.SQLException e) {
-            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
         }
     }
 
@@ -321,33 +403,37 @@ public class AddCandidateForm extends javax.swing.JFrame {
 
         // 1. Validation Bouncer (Removed the strict image check!)
         if (fullName.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a candidate name.", "Missing Info", JOptionPane.WARNING_MESSAGE);
+            showCustomMessage("Missing Info", "Please enter a candidate name.", new java.awt.Color(250, 192, 45)); // Yellow Warning
             return;
         }
 
-        // --- THE DEFAULT IMAGE FALLBACK ---
         // If they didn't pick an image, default it to the independent icon
-        if (imagePath.equals("Path:") || imagePath.trim().isEmpty()) {
+        // --- THE DEFAULT IMAGE FALLBACK ---
+// Check for null FIRST to prevent NullPointerException
+        if (imagePath == null || imagePath.equals("Path:") || imagePath.trim().isEmpty()) {
             imagePath = "SystemIcons\\independentIcon.png";
         }
 
         // 2. Convert the dropdown text into the correct position_id (1 to 6)
         // 2. Convert the dropdown directly to the position_id (Index 0 = President(1), Index 5 = P.R.O.(6))
         // 3. Database Insertion
-        
         try (Connection conn0 = database.DBConnection.DBConnect(); PreparedStatement pst0 = conn0.prepareStatement("SELECT * FROM tblPositions WHERE position_name = ?")) {
-                pst0.setString(1, positionName);
-                ResultSet rs = pst0.executeQuery();
+            pst0.setString(1, positionName);
+            ResultSet rs = pst0.executeQuery();
 
-                while(rs.next()) {
-                    this.assignedPositionID = rs.getInt("position_id");
-                }
-            } catch (java.sql.SQLException e) {
-                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
-                return;
+            while (rs.next()) {
+                this.assignedPositionID = rs.getInt("position_id");
             }
-        
+        } catch (java.sql.SQLException e) {
+            showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
+            return;
+        }
+
         if (currentCandidateID == 0) {
+
+            if (imagePath == null || imagePath.equals("Path:") || imagePath.trim().isEmpty()) {
+                imagePath = "SystemIcons\\independentIcon.png";
+            }
 
             try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("INSERT INTO tblCandidates (full_name, position_id, party_list, image_path, plataporma, credentials) VALUES (?, ?, ?, ?, ?, ?)")) {
 
@@ -361,7 +447,7 @@ public class AddCandidateForm extends javax.swing.JFrame {
 
                 pst.executeUpdate();
 
-                JOptionPane.showMessageDialog(this, "Candidate Successfully Added!");
+                showCustomMessage("Success", "Successfully registered candidate!", new java.awt.Color(55, 140, 59));
                 this.dispose(); // Closes the Edit popup so they return to the Manager table!
 
                 // Reset the form for the next candidate
@@ -371,7 +457,7 @@ public class AddCandidateForm extends javax.swing.JFrame {
                 lblPath.setText("Path:");
 
             } catch (java.sql.SQLException e) {
-                JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
+                showCustomMessage("DB Error", "Database Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
             }
         } else {
             try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("UPDATE tblCandidates SET full_name = ?, position_id = ?, party_list = ?, image_path = ?, plataporma = ?, credentials = ? WHERE candidate_id = ?")) {
@@ -384,14 +470,20 @@ public class AddCandidateForm extends javax.swing.JFrame {
                 pst.setInt(7, this.currentCandidateID);
 
                 pst.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Candidate Successfully Updated!");
+                showCustomMessage("Success", "Successfully updated candidate!", new java.awt.Color(55, 140, 59));
                 this.dispose(); // Closes the Edit popup so they return to the Manager table!
 
             } catch (java.sql.SQLException e) {
-                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                showCustomMessage("DB Error", "Database Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
             }
         }
     }//GEN-LAST:event_btnRegisterActionPerformed
+
+    private void btnRemoveImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveImageActionPerformed
+        // THE FIX: Reset the label to its default state. 
+        // When they hit "Update", your existing code will catch this and assign the default independentIcon!
+        lblPath.setText("Path:");
+    }//GEN-LAST:event_btnRemoveImageActionPerformed
 
     /**
      * @param args the command line arguments
@@ -431,6 +523,7 @@ public class AddCandidateForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChooseImg;
     private javax.swing.JButton btnRegister;
+    private javax.swing.JButton btnRemoveImage;
     private javax.swing.JComboBox<String> cmbCandidatePosition;
     private javax.swing.JComboBox<String> cmbParty;
     private javax.swing.JScrollPane jScrollPane1;

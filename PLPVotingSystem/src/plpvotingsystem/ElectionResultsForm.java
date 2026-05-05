@@ -18,6 +18,124 @@ import javax.swing.JProgressBar;
  * @author PLP
  */
 public class ElectionResultsForm extends javax.swing.JFrame {
+    private void showCustomDeletionDialog(String message, Runnable onConfirm) {
+        javax.swing.JDialog confirmDialog = new javax.swing.JDialog(this, "Confirm Action", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        confirmDialog.setSize(400, 200); 
+        confirmDialog.setLocationRelativeTo(this); 
+        confirmDialog.setUndecorated(true); 
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(250, 192, 45), 3)); // Yellow border for Reopen warning
+        
+        pnlContent.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><center style='width: 280px;'>" + message.replace("\n", "<br>") + "</center></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.JPanel buttonPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 15, 0));
+        buttonPanel.setOpaque(false);
+
+        plpvotingsystem.RoundedButton btnYes = new plpvotingsystem.RoundedButton();
+        btnYes.setText("Yes, Reopen");
+        btnYes.setBackground(new java.awt.Color(250, 192, 45)); // Yellow button to match the warning
+        btnYes.setForeground(java.awt.Color.BLACK);
+        btnYes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnYes.setPreferredSize(new java.awt.Dimension(130, 40));
+        btnYes.setDialogButton(true); 
+        btnYes.addActionListener(e -> {
+            confirmDialog.dispose();
+            onConfirm.run(); 
+        });
+
+        plpvotingsystem.RoundedButton btnNo = new plpvotingsystem.RoundedButton();
+        btnNo.setText("Cancel");
+        btnNo.setBackground(new java.awt.Color(200, 200, 200));
+        btnNo.setForeground(java.awt.Color.BLACK);
+        btnNo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNo.setPreferredSize(new java.awt.Dimension(100, 40));
+        btnNo.setDialogButton(true); 
+        btnNo.addActionListener(e -> confirmDialog.dispose()); 
+
+        buttonPanel.add(btnYes);
+        buttonPanel.add(btnNo);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0); 
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        pnlContent.add(lblMessage, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
+        pnlContent.add(buttonPanel, gbc);
+
+        confirmDialog.add(pnlContent);
+        
+        confirmDialog.getRootPane().registerKeyboardAction(e -> confirmDialog.dispose(), javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0), javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
+        
+        confirmDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnYes.requestFocusInWindow(); // Default to cancel for safety on reopening
+            }
+        });
+
+        confirmDialog.setVisible(true);
+    }
+    
+    private void showCustomMessage(String title, String message, java.awt.Color themeColor) {
+        javax.swing.JDialog msgDialog = new javax.swing.JDialog(this, title, java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        msgDialog.setSize(400, 200);
+        msgDialog.setLocationRelativeTo(this);
+        msgDialog.setUndecorated(true);
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(themeColor, 3));
+        
+        pnlContent.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><center style='width: 280px;'>" + message.replace("\n", "<br>") + "</center></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.JPanel btnPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+        
+        plpvotingsystem.RoundedButton btnOk = new plpvotingsystem.RoundedButton();
+        btnOk.setText("OK");
+        btnOk.setBackground(themeColor);
+        btnOk.setForeground(java.awt.Color.WHITE);
+        btnOk.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOk.setPreferredSize(new java.awt.Dimension(120, 40));
+        btnOk.setDialogButton(true); 
+        btnOk.addActionListener(e -> msgDialog.dispose());
+
+        btnPanel.add(btnOk);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0); 
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        pnlContent.add(lblMessage, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
+        pnlContent.add(btnPanel, gbc);
+
+        msgDialog.add(pnlContent);
+
+        msgDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnOk.requestFocusInWindow();
+            }
+        });
+
+        msgDialog.setVisible(true);
+    }
 
     String currentAdmin = "";
 
@@ -195,7 +313,7 @@ public class ElectionResultsForm extends javax.swing.JFrame {
                 pnlGraphs.add(categoryPanel);
             }
         } catch (java.sql.SQLException e) {
-            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
         }
 
         // Refresh UI
@@ -292,7 +410,7 @@ public class ElectionResultsForm extends javax.swing.JFrame {
             }
 
         } catch (java.sql.SQLException e) {
-            JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+            showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
         }
 
         // 5. Tell Java to repaint the UI with the dynamically generated cards
@@ -439,22 +557,20 @@ public class ElectionResultsForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBack2DashboardActionPerformed
 
     private void btnReopenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReopenActionPerformed
-        int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to REOPEN the elections? Students will be able to log in and vote again.", "Reopen Elections", JOptionPane.WARNING_MESSAGE);
-
-        if (adminChoice == JOptionPane.YES_OPTION) {
+        showCustomDeletionDialog("Are you sure you want to REOPEN the elections?<br>Students will be able to log in and vote again.", () -> {
             try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("UPDATE tblElectionStatus SET current_phase = 'OPEN' WHERE status_id = 1")) {
 
                 pst.executeUpdate();
-                JOptionPane.showMessageDialog(this, "The election is now OPEN.");
+                showCustomMessage("Election Reopened", "The election is now OPEN.", new java.awt.Color(55, 140, 59));
 
                 // Teleport back to the dashboard so it refreshes the buttons
                 this.dispose();
                 new plpvotingsystem.AdminDashboard(this.currentAdmin).setVisible(true);
 
             } catch (java.sql.SQLException e) {
-                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
             }
-        }
+        });
     }//GEN-LAST:event_btnReopenActionPerformed
 
     

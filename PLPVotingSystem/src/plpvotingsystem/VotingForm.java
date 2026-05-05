@@ -18,10 +18,10 @@ public class VotingForm extends javax.swing.JFrame {
 
     // --- DYNAMIC POSITION TRACKERS ---
     int currentStepIndex = 0; // Starts at 0 (first position)
-    int totalPositions = 0; 
+    int totalPositions = 0;
     java.util.List<Integer> positionIds = new java.util.ArrayList<>();
     java.util.List<String> positionNames = new java.util.ArrayList<>();
-    
+
     String[] candidateChoices; // We will size this dynamically!
 
     plpvotingsystem.RoundedButton customBtnBack;
@@ -29,8 +29,6 @@ public class VotingForm extends javax.swing.JFrame {
     plpvotingsystem.VotingStepper stepper;
     ButtonGroup groupCandidates = new ButtonGroup();
     String loggedInStudent;
-    
-    
 
     private void loadCandidates(int stepIndex) {
         pnlCandidates.removeAll();
@@ -47,17 +45,15 @@ public class VotingForm extends javax.swing.JFrame {
         customBtnNext.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         try (
-                Connection conn = database.DBConnection.DBConnect(); 
-                PreparedStatement pst = conn.prepareStatement("SELECT full_name, party_list, credentials, plataporma, image_path FROM tblCandidates WHERE position_id = ? ORDER BY CASE WHEN full_name = 'Abstain' THEN 1 ELSE 0 END, full_name ASC")
-        ) {
+                Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("SELECT full_name, party_list, credentials, plataporma, image_path FROM tblCandidates WHERE position_id = ? ORDER BY CASE WHEN full_name = 'Abstain' THEN 1 ELSE 0 END, full_name ASC")) {
             pst.setInt(1, realPositionId); // Use the dynamic ID!
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
                 String fullName = rs.getString("full_name");
-                
+
                 if (fullName == null || fullName.trim().isEmpty()) {
-                    continue; 
+                    continue;
                 }
 
                 String partyList = rs.getString("party_list");
@@ -87,10 +83,10 @@ public class VotingForm extends javax.swing.JFrame {
                 pnlCandidates.add(javax.swing.Box.createVerticalStrut(15));
             }
             pnlCandidates.add(javax.swing.Box.createVerticalGlue());
-            
+
             pnlCandidates.revalidate();
             pnlCandidates.repaint();
-            
+
         } catch (java.sql.SQLException e) {
             JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
             return;
@@ -111,13 +107,12 @@ public class VotingForm extends javax.swing.JFrame {
 
     public VotingForm(String studentNumber) {
         initComponents();
-        
+
         this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         this.getContentPane().removeAll();
-        
+
         // --- FETCH DYNAMIC POSITIONS ---
-        try (Connection conn = database.DBConnection.DBConnect(); 
-             PreparedStatement pst = conn.prepareStatement("SELECT position_id, position_name FROM tblPositions ORDER BY position_id ASC")) {
+        try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("SELECT position_id, position_name FROM tblPositions ORDER BY position_id ASC")) {
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 positionIds.add(rs.getInt("position_id"));
@@ -126,7 +121,7 @@ public class VotingForm extends javax.swing.JFrame {
         } catch (java.sql.SQLException e) {
             JOptionPane.showMessageDialog(this, "Failed to load ballot positions: " + e.getMessage());
         }
-        
+
         totalPositions = positionIds.size();
         candidateChoices = new String[totalPositions]; // Sizes the array perfectly!
 
@@ -252,12 +247,12 @@ public class VotingForm extends javax.swing.JFrame {
 
         // 4. Add the finished pnlMain to the frame ONLY ONCE
         this.getContentPane().add(pnlMain, java.awt.BorderLayout.CENTER);
-        
+
         this.getRootPane().setDefaultButton(customBtnNext);
 
         loggedInStudent = studentNumber;
         loadCandidates(currentStepIndex);
-        
+
     }
 
     @SuppressWarnings("unchecked")

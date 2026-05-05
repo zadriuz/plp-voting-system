@@ -13,7 +13,19 @@ public class GlobalHeader extends javax.swing.JPanel {
     public GlobalHeader() {
         initComponents();
         
+        // Stops the header button from gaining keyboard focus, preventing the ugly gray border!
+        roundedButton1.setFocusable(false);
+        
         roundedButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        
+        
+        // --- CUSTOM DESIGN INJECTION ---
+        roundedButton1.setBackground(new java.awt.Color(211, 47, 47)); // Bootstrap Danger Red
+        roundedButton1.setForeground(new java.awt.Color(255, 255, 255));
+        roundedButton1.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(160, 30, 40), 2), // Darker red edge
+            javax.swing.BorderFactory.createEmptyBorder(5, 15, 5, 15) // Inner padding
+        ));
     }
  
     /**
@@ -72,17 +84,74 @@ public class GlobalHeader extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void roundedButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roundedButton1ActionPerformed
-        int userChoice = JOptionPane.showConfirmDialog(
-                null,
-                "Are you sure you want to log out?",
-                "Confirm Logout",
-                JOptionPane.YES_NO_OPTION
-        );
+        java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
+        javax.swing.JDialog confirmDialog = new javax.swing.JDialog(parentWindow, "Confirm Logout", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        confirmDialog.setSize(350, 180);
+        confirmDialog.setLocationRelativeTo(parentWindow);
+        confirmDialog.setUndecorated(true);
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 53, 69), 3));
         
-        if(userChoice == JOptionPane.YES_OPTION){
-            javax.swing.SwingUtilities.getWindowAncestor(this).dispose();
+        pnlContent.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><center style='width: 250px;'>Are you sure you want to log out?</center></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.JPanel buttonPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 15, 0));
+        buttonPanel.setOpaque(false);
+
+        plpvotingsystem.RoundedButton btnYes = new plpvotingsystem.RoundedButton();
+        btnYes.setText("Yes, Log Out");
+        btnYes.setBackground(new java.awt.Color(220, 53, 69));
+        btnYes.setForeground(java.awt.Color.WHITE);
+        btnYes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnYes.setPreferredSize(new java.awt.Dimension(130, 40));
+        btnYes.setDialogButton(true); // ACTIVATES BORDER AND ENTER KEY
+        
+        btnYes.addActionListener(e -> {
+            confirmDialog.dispose();
+            parentWindow.dispose();
             new plpvotingsystem.LoginForm().setVisible(true);
-        }
+        });
+
+        plpvotingsystem.RoundedButton btnNo = new plpvotingsystem.RoundedButton();
+        btnNo.setText("Cancel");
+        btnNo.setBackground(new java.awt.Color(200, 200, 200));
+        btnNo.setForeground(java.awt.Color.BLACK);
+        btnNo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNo.setPreferredSize(new java.awt.Dimension(100, 40));
+        btnNo.setDialogButton(true); // ACTIVATES BORDER AND ENTER KEY
+        
+        btnNo.addActionListener(e -> confirmDialog.dispose());
+
+        buttonPanel.add(btnYes);
+        buttonPanel.add(btnNo);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0); 
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        pnlContent.add(lblMessage, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
+        pnlContent.add(buttonPanel, gbc);
+
+        confirmDialog.add(pnlContent);
+
+        // REMOVED 'setDefaultButton'. We simply map 'Escape' and request initial focus on 'Yes'.
+        confirmDialog.getRootPane().registerKeyboardAction(e -> confirmDialog.dispose(), javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0), javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
+        confirmDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnYes.requestFocusInWindow();
+            }
+        });
+
+        confirmDialog.setVisible(true);
     }//GEN-LAST:event_roundedButton1ActionPerformed
 
 

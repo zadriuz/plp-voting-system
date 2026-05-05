@@ -15,6 +15,132 @@ import java.sql.ResultSet;
  * @author PLP
  */
 public class ManageCandidatesForm extends javax.swing.JFrame {
+    
+    private void showCustomMessage(String title, String message, java.awt.Color themeColor) {
+        javax.swing.JDialog msgDialog = new javax.swing.JDialog(this, title, java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        msgDialog.setSize(400, 200);
+        msgDialog.setLocationRelativeTo(this);
+        msgDialog.setUndecorated(true);
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(themeColor, 3));
+        
+        pnlContent.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><center style='width: 280px;'>" + message.replace("\n", "<br>") + "</center></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.JPanel btnPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+        
+        plpvotingsystem.RoundedButton btnOk = new plpvotingsystem.RoundedButton();
+        btnOk.setText("OK");
+        btnOk.setBackground(themeColor);
+        btnOk.setForeground(java.awt.Color.WHITE);
+        btnOk.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOk.setPreferredSize(new java.awt.Dimension(120, 40));
+        btnOk.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.DARK_GRAY, 2, true));
+        btnOk.addActionListener(e -> msgDialog.dispose());
+
+        btnPanel.add(btnOk);
+
+        // Assembly
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0); // Exactly 20px gap below the text
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        pnlContent.add(lblMessage, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
+        pnlContent.add(btnPanel, gbc);
+
+        msgDialog.add(pnlContent);
+
+        msgDialog.getRootPane().setDefaultButton(btnOk);
+        msgDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnOk.requestFocusInWindow();
+            }
+        });
+
+        msgDialog.setVisible(true);
+    }
+    
+    /**
+     * UI REPLACEMENT 3: Replaces the standard gray deletion prompt with the application's custom style.
+     * @param message The confirmation message to display (e.g., "Are you sure you want to delete...").
+     * @param onConfirm Action to be executed if user clicks 'Yes'. This is a function that takes no parameters.
+     */
+    private void showCustomDeletionDialog(String message, Runnable onConfirm) {
+        javax.swing.JDialog confirmDialog = new javax.swing.JDialog(this, "Confirm Deletion", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        confirmDialog.setSize(400, 200); 
+        confirmDialog.setLocationRelativeTo(this); 
+        confirmDialog.setUndecorated(true); 
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 53, 69), 3));
+        
+        pnlContent.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><center style='width: 280px;'>" + message.replace("\n", "<br>") + "</center></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.JPanel buttonPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 15, 0));
+        buttonPanel.setOpaque(false);
+
+        plpvotingsystem.RoundedButton btnYes = new plpvotingsystem.RoundedButton();
+        btnYes.setText("Yes, Delete");
+        btnYes.setBackground(new java.awt.Color(220, 53, 69)); 
+        btnYes.setForeground(java.awt.Color.WHITE);
+        btnYes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnYes.setPreferredSize(new java.awt.Dimension(130, 40));
+        btnYes.setDialogButton(true); 
+        btnYes.addActionListener(e -> {
+            confirmDialog.dispose();
+            onConfirm.run(); 
+        });
+
+        plpvotingsystem.RoundedButton btnNo = new plpvotingsystem.RoundedButton();
+        btnNo.setText("Cancel");
+        btnNo.setBackground(new java.awt.Color(200, 200, 200));
+        btnNo.setForeground(java.awt.Color.BLACK);
+        btnNo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNo.setPreferredSize(new java.awt.Dimension(100, 40));
+        btnNo.setDialogButton(true); 
+        btnNo.addActionListener(e -> confirmDialog.dispose()); 
+
+        buttonPanel.add(btnYes);
+        buttonPanel.add(btnNo);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0); 
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        pnlContent.add(lblMessage, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
+        pnlContent.add(buttonPanel, gbc);
+
+        confirmDialog.add(pnlContent);
+        
+        confirmDialog.getRootPane().registerKeyboardAction(e -> confirmDialog.dispose(), javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0), javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
+        
+        confirmDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnYes.requestFocusInWindow();
+            }
+        });
+
+        confirmDialog.setVisible(true);
+    }
 
     int candidateID;
     java.awt.Image plpIcon = java.awt.Toolkit.getDefaultToolkit().getImage("SystemIcons\\plpIcon1000.png");
@@ -271,68 +397,57 @@ public class ManageCandidatesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     private void btnDeleteCandidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteCandidateActionPerformed
-        // 1. Get ALL selected rows (allows multi-select with Ctrl/Shift)
         int[] selectedRows = tblCandidateData.getSelectedRows();
 
         if (selectedRows.length == 0) {
-            JOptionPane.showMessageDialog(this, "Select a candidate first to remove by clicking on their cell.", "Remove Candidate", JOptionPane.ERROR_MESSAGE);
+            showCustomMessage("Selection Error", "Select a candidate first to remove by clicking on their cell.", new java.awt.Color(220, 53, 69));
             return;
         }
 
-        int adminChoice = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove the " + selectedRows.length + " selected candidate(s)?", "Confirm Deletion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-        if (adminChoice == JOptionPane.YES_OPTION) {
+        showCustomDeletionDialog("Are you sure you want to remove the " + selectedRows.length + " selected candidate(s)?", () -> {
             try (Connection conn = database.DBConnection.DBConnect(); PreparedStatement pst = conn.prepareStatement("DELETE FROM tblCandidates WHERE candidate_id = ?")) {
 
                 for (int i = 0; i < selectedRows.length; i++) {
-                    // THE MAGIC TRANSLATOR! Crucial when using a Search Filter!
                     int modelRow = tblCandidateData.convertRowIndexToModel(selectedRows[i]);
-
-                    // Grab Candidate ID from Column 0
                     String data = tblCandidateData.getModel().getValueAt(modelRow, 0).toString();
-
                     pst.setInt(1, Integer.parseInt(data));
                     pst.addBatch();
                 }
 
                 pst.executeBatch();
-                JOptionPane.showMessageDialog(this, "Successfully removed " + selectedRows.length + " candidate(s).");
+                showCustomMessage("Success", "Successfully deleted " + selectedRows.length + " record(s).", new java.awt.Color(55, 140, 59));
                 loadCandidateTable();
 
             } catch (java.sql.SQLException e) {
-                JOptionPane.showMessageDialog(this, "DB Error: " + e.getMessage());
+                showCustomMessage("DB Error", "Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
             }
-        }
+        });
     }//GEN-LAST:event_btnDeleteCandidateActionPerformed
 
     private void btnEditCandidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditCandidateActionPerformed
         int selectedRow = tblCandidateData.getSelectedRow();
 
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Select a candidate first to edit by clicking on their cell.", "Edit Candidate", JOptionPane.ERROR_MESSAGE);
+            showCustomMessage("Selection Error", "Select a candidate first to edit by clicking on their cell.", new java.awt.Color(220, 53, 69));
             return;
-        } else {
-            int modelRow = tblCandidateData.convertRowIndexToModel(selectedRow);
-            String data = tblCandidateData.getModel().getValueAt(modelRow, 0).toString();
-            int selectedID = Integer.parseInt(data);
+        } 
+        
+        int modelRow = tblCandidateData.convertRowIndexToModel(selectedRow);
+        String data = tblCandidateData.getModel().getValueAt(modelRow, 0).toString();
+        int selectedID = Integer.parseInt(data);
 
-            // 1. Create the form but don't show it yet
-            plpvotingsystem.AddCandidateForm editForm = new plpvotingsystem.AddCandidateForm(selectedID);
-            editForm.setLocationRelativeTo(null);
-            editForm.setIconImage(plpIcon);
+        plpvotingsystem.AddCandidateForm editForm = new plpvotingsystem.AddCandidateForm(selectedID);
+        editForm.setLocationRelativeTo(null);
+        editForm.setIconImage(plpIcon);
 
-            // 2. Attach a spy to the form that waits for it to die
-            editForm.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                    // 3. ONLY refresh the table once the popup is officially closed!
-                    loadCandidateTable();
-                }
-            });
+        editForm.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                loadCandidateTable();
+            }
+        });
 
-            // 4. Now show the form
-            editForm.setVisible(true);
-        }
+        editForm.setVisible(true);
     }//GEN-LAST:event_btnEditCandidateActionPerformed
 
     private void btnAddCandidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCandidateActionPerformed
