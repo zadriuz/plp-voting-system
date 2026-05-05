@@ -16,6 +16,57 @@ import java.security.MessageDigest;
 import java.util.Formatter;
 
 public class ReviewPage extends javax.swing.JFrame {
+    private void showCustomMessage(String title, String message, java.awt.Color themeColor) {
+        javax.swing.JDialog msgDialog = new javax.swing.JDialog(this, title, java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        msgDialog.setSize(400, 200);
+        msgDialog.setLocationRelativeTo(this);
+        msgDialog.setUndecorated(true);
+
+        plpvotingsystem.RoundedPanel pnlContent = new plpvotingsystem.RoundedPanel();
+        pnlContent.setBackground(java.awt.Color.WHITE);
+        pnlContent.setBorder(javax.swing.BorderFactory.createLineBorder(themeColor, 3));
+
+        pnlContent.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        javax.swing.JLabel lblMessage = new javax.swing.JLabel("<html><center style='width: 280px;'>" + message.replace("\n", "<br>") + "</center></html>");
+        lblMessage.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.JPanel btnPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+
+        plpvotingsystem.RoundedButton btnOk = new plpvotingsystem.RoundedButton();
+        btnOk.setText("OK");
+        btnOk.setBackground(themeColor);
+        btnOk.setForeground(java.awt.Color.WHITE);
+        btnOk.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOk.setPreferredSize(new java.awt.Dimension(120, 40));
+        btnOk.setDialogButton(true);
+        btnOk.addActionListener(e -> msgDialog.dispose());
+
+        btnPanel.add(btnOk);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0);
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        pnlContent.add(lblMessage, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
+        pnlContent.add(btnPanel, gbc);
+
+        msgDialog.add(pnlContent);
+
+        msgDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent e) {
+                btnOk.requestFocusInWindow();
+            }
+        });
+
+        msgDialog.setVisible(true);
+    }
 
     String studentNo;
     String[] candidateChoices;
@@ -300,7 +351,7 @@ public class ReviewPage extends javax.swing.JFrame {
     private void printVoterReceipt(String studentNo, String passcode, String votedCandidates) {
         try {
             javax.swing.JTextArea receiptText = new javax.swing.JTextArea();
-            receiptText.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 10)); // Monospaced ensures perfect alignment
+            receiptText.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 10));
 
             StringBuilder sb = new StringBuilder();
             sb.append("========================================\n");
@@ -313,7 +364,7 @@ public class ReviewPage extends javax.swing.JFrame {
             sb.append("Passcode  : ").append(passcode).append("\n\n");
 
             sb.append("----------- VOTES CAST -----------------\n");
-            // Voted candidates string should ideally be formatted with line breaks before passing it here
+            
             sb.append(votedCandidates).append("\n");
             sb.append("----------------------------------------\n\n");
 
@@ -324,14 +375,13 @@ public class ReviewPage extends javax.swing.JFrame {
             sb.append("========================================\n");
 
             receiptText.setText(sb.toString());
-
-            // Trigger native print dialog
+            
             boolean complete = receiptText.print();
             if (complete) {
-                JOptionPane.showMessageDialog(this, "Receipt sent to printer.");
+                showCustomMessage("Success", "Receipt sent to printer.", new java.awt.Color(55, 140, 59));
             }
         } catch (java.awt.print.PrinterException pe) {
-            JOptionPane.showMessageDialog(this, "Printer Error: " + pe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            showCustomMessage("Printer Error", "Printer Error: " + pe.getMessage(), new java.awt.Color(220, 53, 69));
         }
     }
 
@@ -485,7 +535,7 @@ public class ReviewPage extends javax.swing.JFrame {
 
             // 4. (The dispose and dashboard redirect are DELETED because the popup dialog handles closing the window now!)
         } catch (java.sql.SQLException e) {
-            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
+            showCustomMessage("Database Error", "Database Error: " + e.getMessage(), new java.awt.Color(220, 53, 69));
             return;
         }
     }//GEN-LAST:event_btnConfirmActionPerformed
