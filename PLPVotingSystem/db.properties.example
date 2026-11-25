@@ -1,0 +1,3 @@
+db.url=jdbc:mysql://localhost:3306/plpvotingdb
+db.user=root
+db.password=YOUR_MYSQL_PASSWORD

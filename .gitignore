@@ -1,9 +1,19 @@
-# Compiled class files anywhere in the project
+# Compiled class files and archives anywhere in the project
 **/*.class
+**/*.jar
 
 # NetBeans build and distributable folders
 PLPVotingSystem/build/
 PLPVotingSystem/dist/
 
-# NetBeans private user settings
+# NetBeans private user settings and other IDE metadata
 PLPVotingSystem/nbproject/private/
+.idea/
+*.iml
+.vscode/
+
+# Local database credentials & OS clutter
+db.properties
+.env
+.DS_Store
+Thumbs.db
